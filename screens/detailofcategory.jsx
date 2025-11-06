@@ -4,7 +4,7 @@ import CardGrid from '../components/cardGrid.jsx'
 import { StatusBar, StyleSheet, useColorScheme, View, Text, Button, ScrollView, TouchableOpacity, ImageBackground, Image, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getProductsWithImageUrls } from "../services/productsApi.js";
-import {addItemToCart} from '../services/cartApi.js';
+import {addItemToCart} from '../services/memoriesAPI.js';
 
 const CategoryDetailScreen = ({route}) => {
     const { categoryTitle, categoryItems } = route.params;

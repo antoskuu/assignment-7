@@ -9,11 +9,10 @@ const styles = StyleSheet.create({
   homePage: {
     flex: 1,
   },
-  text: {
-    fontSize: 35,
-    color: '#000000ff',
+  title: {
+    fontSize: 24,
     textAlign: 'center',
-    fontWeight: '900',
+    fontWeight: 'bold',
     paddingTop: 10,
   },
   buttonContainer : {

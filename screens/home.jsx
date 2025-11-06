@@ -5,11 +5,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from '../styles/styles.jsx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
+import { getMemories} from "../services/memoriesAPI.js";
+import CardGrid from '../components/cardGrid.jsx'
 
 
-const HomeScreen = ({navigation}) => {    
-    const [name, setName] = useState('');
-    const [city, setCity] = useState('');
+const HomeScreen = ({navigation}) => {
+    const { colors } = useTheme();
+    const [ memories, setMemories ] = useState([]);
+    const [ name, setName ] = useState('');
+    const [ city, setCity ] = useState('');
 
     useFocusEffect(
         useCallback(() => {
@@ -23,47 +28,35 @@ const HomeScreen = ({navigation}) => {
         }, [])
     );
 
+
+
+    const fetchMemories = async () => {
+            const data = await getMemories();
+            console.log('Fetched memories:', data);
+            console.log('Is array?', Array.isArray(data));
+            // Si l'API retourne un objet avec une propriété contenant le tableau
+            const memoriesArray = Array.isArray(data) ? data : (data?.memories || []);
+            setMemories(memoriesArray);
+        };
+    
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchMemories();
+        }, [])
+    );
+
+
+
     return (
 <ScrollView style={styles.ScrollView} contentContainerStyle={styles.scrollContent}>
-        <ImageBackground
-          source={require('../assets/app/burger.jpg')}
-          style={styles.backgroundImage}
-          resizeMode='cover'
-        >
-          <LinearGradient
-            colors={['#fff7c8ff', 'transparent']}
-            style={styles.gradientOverlayTop}
-            start={{x: 0, y: 0}}
-            end={{x: 0, y: 1}}
-          />
-          
-          <View style={styles.contentOverlay}>
-            <Image source={require('../assets/app/logo.png')} style={styles.logo} />
-            {name ? <Text style={styles.text}>Hello, {name}</Text> : null}
-            <Text style={styles.text}>The best burgers in town! - {city || 'Trondheim'}</Text>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.mainButton} onPress={() => navigation.navigate('MenuTab')} >
-                <Text style={{color: 'white'}}>Menu</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.secondaryButton} onPress={() => {}} >
-                <Text style={{color: 'white'}}>Reservations</Text>
-              </TouchableOpacity>
+        <View style={{backgroundColor: colors.background}}>
+                
+                <Text style={{...styles.title, color: colors.text}}>Memories</Text>
+                <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 8 }}>
+                <CardGrid cart_bool={false} items={memories} />
+
+              </View>
             </View>
-            <Text style={{color: '#ffffff'}}>Address: 123 Burger Veg, {city || 'Trondheim'}</Text>
-          </View>
-        <LinearGradient
-            colors={['transparent', '#fff7c8ff']}
-            style={styles.gradientOverlayBottom}
-            start={{x: 0, y: 0}}
-            end={{x: 0, y: 1}}
-          />
-        </ImageBackground>
-        
-        <ImageBackground 
-          source={require('../assets/app/restaurant.jpg')}
-          style={styles.backgroundImage}
-          resizeMode='cover'
-        ></ImageBackground>
       </ScrollView>
 
     )
