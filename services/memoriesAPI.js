@@ -23,7 +23,7 @@ const getUserId = async () => {
 
 
 
-export const uploadMemory = async (file, title) => {
+export const uploadMemory = async (file, title, location) => {
     try {
         const userId = await getUserId();
         console.log('userId:', userId);
@@ -32,6 +32,7 @@ export const uploadMemory = async (file, title) => {
         const formData = new FormData();
         formData.append('user_id', userId);
         formData.append('title', title);
+        formData.append('location', location ? JSON.stringify(location) : '');
         formData.append('file', {
             uri: file.uri,
             type: file.type || 'image/jpeg',
@@ -83,7 +84,16 @@ export const getMemories = async () => {
         
         const data = await response.json();
         console.log('Memories response:', data);
-        return Array.isArray(data) ? data : (data?.memories || []);
+        
+        // Convertir les chemins d'images relatifs en URLs complètes
+        const memoriesArray = Array.isArray(data) ? data : (data?.memories || []);
+        const memoriesWithFullUrls = memoriesArray.map(memory => ({
+            ...memory,
+            image: memory.image_url ? `${API_BASE}${memory.image_url}` : memory.image
+        }));
+        
+        console.log('Memories with full URLs:', memoriesWithFullUrls);
+        return memoriesWithFullUrls;
     } catch (error) {
         console.error('Error in getMemories:', error);
         return [];
@@ -116,3 +126,48 @@ export const delItemFromCart = async (itemId) => {
 };
 
 
+export const getTags = async () => {
+    const userId = await getUserId();
+    try {
+        const response = await fetch(`${API_BASE}/tags/${userId}`);
+        if (!response.ok) {
+            console.error('Error fetching tags:', response.status);
+            return [];
+        }
+        const data = await response.json();
+        console.log('Tags fetched:', data);
+        return Array.isArray(data) ? data : [];  // Changed from data.tags
+    } catch (error) {
+        console.error('Error in getTags:', error);
+        return [];
+    }
+};
+
+export const uploadTags = async (tags) => {
+    try {
+        const userId = await getUserId();
+        
+        const formData = new FormData();
+        formData.append('tags', JSON.stringify(tags));
+
+        const response = await fetch(`${API_BASE}/tags/${userId}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        if (!response.ok) {
+            console.error('Error uploading tags:', response.status);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Tags uploaded:', data);
+        return data;
+    } catch (error) {
+        console.error('Error in uploadTags:', error);
+        throw error;
+    }
+};

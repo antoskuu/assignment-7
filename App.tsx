@@ -10,7 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './screens/home.jsx';
 import MapScreen from './screens/map.jsx';
-import CategoryDetailScreen from './screens/detailofcategory.jsx';
+import MemoryDetailScreen from './screens/detailofmemory.jsx';
 import Create from './screens/create.jsx';
 import Settings from './screens/settings.jsx';
 import { MyLightTheme, MyDarkTheme } from './styles/themes.js';
@@ -37,6 +37,8 @@ function HomeStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="MemoryDetail" component={MemoryDetailScreen} options={{ headerShown: false }} />
+
     </Stack.Navigator>
   );
 }
@@ -45,7 +47,6 @@ function MapStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Map" component={MapScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="CategoryDetail" component={CategoryDetailScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

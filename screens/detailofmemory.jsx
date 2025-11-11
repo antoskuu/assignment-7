@@ -3,14 +3,11 @@ import styles from '../styles/styles.jsx';
 import CardGrid from '../components/cardGrid.jsx'
 import { StatusBar, StyleSheet, useColorScheme, View, Text, Button, ScrollView, TouchableOpacity, ImageBackground, Image, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { getProductsWithImageUrls } from "../services/productsApi.js";
-import {addItemToCart} from '../services/memoriesAPI.js';
 
-const CategoryDetailScreen = ({route}) => {
-    const { categoryTitle, categoryItems } = route.params;
+const MemoryDetailScreen = ({route}) => {
+    const { memory } = route.params;
     const navigation = useNavigation();
 
-    const itemsWithImageUrls = getProductsWithImageUrls(categoryItems);
     return (
     <ScrollView>
     <View style={{backgroundColor: '#fff7c8ff'}}>
@@ -24,17 +21,16 @@ const CategoryDetailScreen = ({route}) => {
         >
             <Text style={{ fontSize: 24 }}>←</Text>
         </TouchableOpacity>        
-        <Text style={styles.text}>{categoryTitle}</Text>
-
-        <CardGrid cart_bool={true} items={itemsWithImageUrls} cart_function={addItemToCart} cart_text={"Add to Cart"} />
+        <Text style={styles.text}>{memory.title}</Text>
+        <Text style={styles.text}>Location: {memory.location}</Text>
+        {memory.image && (
+            <Image 
+                source={{uri: memory.image}} 
+                style={{width: '100%', height: 300, resizeMode: 'cover'}} 
+            />
+        )}
     </View>
 
-
-        <ImageBackground 
-        source={require('../assets/app/restaurant.jpg')}
-        style={styles.backgroundImage}
-        resizeMode='cover'
-        ></ImageBackground>
 </ScrollView>
     )
 
@@ -42,4 +38,4 @@ const CategoryDetailScreen = ({route}) => {
 }
 
 
-export default CategoryDetailScreen;
+export default MemoryDetailScreen;

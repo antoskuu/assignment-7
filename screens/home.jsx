@@ -13,22 +13,22 @@ import CardGrid from '../components/cardGrid.jsx'
 const HomeScreen = ({navigation}) => {
     const { colors } = useTheme();
     const [ memories, setMemories ] = useState([]);
-    const [ name, setName ] = useState('');
-    const [ city, setCity ] = useState('');
 
     useFocusEffect(
         useCallback(() => {
             const load = async () => {
-                const n = await AsyncStorage.getItem('settings_name');
-                const c = await AsyncStorage.getItem('settings_city');
-                if (n) setName(n);
-                if (c) setCity(c);
+                fetchMemories();
             };
             load();
         }, [])
     );
 
-
+    const handleMemoryPress = (memory) => {
+        console.log("clicked", memory)
+        navigation.navigate('MemoryDetail', {
+            memory: memory,
+        });
+    };
 
     const fetchMemories = async () => {
             const data = await getMemories();
@@ -53,7 +53,7 @@ const HomeScreen = ({navigation}) => {
                 
                 <Text style={{...styles.title, color: colors.text}}>Memories</Text>
                 <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 8 }}>
-                <CardGrid cart_bool={false} items={memories} />
+                <CardGrid cart_bool={false} items={memories} onItemPress={handleMemoryPress} />
 
               </View>
             </View>
