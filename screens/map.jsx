@@ -6,7 +6,7 @@ import { StatusBar, StyleSheet, useColorScheme, View, Text, Button, ScrollView, 
 import { useNavigation } from '@react-navigation/native';
 import {getCategories} from '../services/productsApi.js';
 import { useTheme } from '@react-navigation/native';
-
+import MapView from 'react-native-maps';
 
 const MapScreen = () => {
     const { colors } = useTheme();
@@ -39,11 +39,14 @@ const MapScreen = () => {
                 <CardGrid cart_bool={false} items={categories} onItemPress={handleCategoryPress}/>
             </View>
             
-            {/* <ImageBackground 
-                source={require('../assets/app/restaurant.jpg')}
-                style={styles.backgroundImage}
-                resizeMode='cover'
-            /> */}
+            <MapView
+  initialRegion={{
+    latitude: 37.78825,
+    longitude: -122.4324,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  }}
+/>
         </ScrollView>
     )
 }

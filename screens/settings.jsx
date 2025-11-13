@@ -8,7 +8,7 @@ import { uploadTags } from '../services/memoriesAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CardGrid from '../components/cardGrid';
 const Settings = () => {
-  const { themeName, setThemeName } = useContext(ThemeContext); // ← Correction ici
+  const { themeName, setThemeName } = useContext(ThemeContext); 
   const { colors } = useTheme();
   const [ tags, setTags] = useState([]);
   const [language, setLanguage] = useState('English');
@@ -108,6 +108,7 @@ const Settings = () => {
               </TouchableOpacity>
             ))}
           </View>
+        </View>
 
       <View style={{marginBottom: 12}}>
         <Text style={{marginBottom: 6, color: colors.text}}>Language</Text>
