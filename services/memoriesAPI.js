@@ -136,7 +136,8 @@ export const getTags = async () => {
         }
         const data = await response.json();
         console.log('Tags fetched:', data);
-        return Array.isArray(data) ? data : [];  // Changed from data.tags
+        console.log('Type of data:', typeof data);
+        return data ? data : [];
     } catch (error) {
         console.error('Error in getTags:', error);
         return [];

@@ -1,6 +1,25 @@
 pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
 plugins { id("com.facebook.react.settings") }
 extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = "mapbox"
+                password = "sk.eyJ1IjoiYW50b3NrdXUiLCJhIjoiY21oeGJramI0MDBubTJrczk1NXpidXBxMSJ9.BKTie0cXt9SP2dGAmoyddA"
+            }
+        }
+    }
+}
+
 rootProject.name = 'AwesomeProject'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')

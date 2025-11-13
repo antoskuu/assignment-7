@@ -13,6 +13,7 @@ const Settings = () => {
   const [ tags, setTags] = useState([]);
   const [language, setLanguage] = useState('English');
   const [newTag, setNewTag] = useState('');
+
   const addTag = async () => {
     const t = (newTag || '').trim();
     if (!t) return;
@@ -39,7 +40,9 @@ const Settings = () => {
     load();
     const fetchTags = async () => {
       const data = await getTags();
-      setTags(data);
+      setTags(data[0]);
+      console.log('Fetched tags in settings:', data);
+      console.log('test',data[0])
     };
     fetchTags();
   }, []);
