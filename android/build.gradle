@@ -31,7 +31,7 @@ allprojects {
             }
             credentials {
                 username = "mapbox"
-                password = "sk.eyJ1IjoiYW50b3NrdXUiLCJhIjoiY21oeGJramI0MDBubTJrczk1NXpidXBxMSJ9.BKTie0cXt9SP2dGAmoyddA"
+                password = System.getenv("MAPBOX_ACCESS_TOKEN")
             }
         }
     }

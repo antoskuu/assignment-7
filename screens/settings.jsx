@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {View, Text, TextInput, TouchableOpacity, ScrollView, Picker, Touchable, Switch, StyleSheet} from 'react-native';
+import {Modal, View, Text, TextInput, TouchableOpacity, ScrollView, Picker, Touchable, Switch, StyleSheet} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { ThemeContext } from '../App';
 import { getTags } from '../services/memoriesAPI';
@@ -7,12 +7,16 @@ import { useFocusEffect } from '@react-navigation/native';
 import { uploadTags } from '../services/memoriesAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CardGrid from '../components/cardGrid';
+
+import ColorPicker, { Panel1, Swatches, Preview, OpacitySlider, HueSlider, Panel5 } from 'reanimated-color-picker';
+
 const Settings = () => {
   const { themeName, setThemeName } = useContext(ThemeContext); 
   const { colors } = useTheme();
   const [ tags, setTags] = useState([]);
   const [language, setLanguage] = useState('English');
   const [newTag, setNewTag] = useState('');
+  const [showColorModal, setShowColorModal] = useState(false);
 
   const addTag = async () => {
     const t = (newTag || '').trim();
@@ -26,7 +30,11 @@ const Settings = () => {
     setNewTag('');
     try { await uploadTags(updated); } catch (e) { console.error('uploadTags error', e); }
   };
-
+const onSelectColor = ({ hex }) => {
+    'worklet';
+    // do something with the selected color.
+    console.log(hex);
+  };
   const removeTag = async (tagToRemove) => {
     const updated = tags.filter(t => t !== tagToRemove);
     setTags(updated);
@@ -86,6 +94,19 @@ const Settings = () => {
                   marginRight: 8,
                 }}
               />
+                  <View style={styles.container}>
+<TouchableOpacity onPress={() => setShowColorModal(true)} style={{backgroundColor: colors.primary, paddingHorizontal: 12, justifyContent: 'center', borderRadius: 8}}>
+                <Text style={{color: '#fff'}}>Add</Text>
+              </TouchableOpacity>
+      <Modal visible={showColorModal} animationType='slide'>
+        <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColor}>
+        <Panel5 />
+          <Preview />
+        </ColorPicker>
+
+        <TouchableOpacity title='Ok' onPress={() => setShowColorModal(false)} />
+      </Modal>
+    </View>
               <TouchableOpacity onPress={addTag} style={{backgroundColor: colors.primary, paddingHorizontal: 12, justifyContent: 'center', borderRadius: 8}}>
                 <Text style={{color: '#fff'}}>Add</Text>
               </TouchableOpacity>
@@ -93,11 +114,12 @@ const Settings = () => {
 
           <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
             {tags.map((t) => (
+              console.log('Rendering tag:', t[0]),
               <TouchableOpacity
-                key={t}
+                key={t[0]}
                 onPress={() => removeTag(t)}
                 style={{
-                  backgroundColor: colors.card,
+                  backgroundColor: t[1],
                   borderRadius: 16,
                   paddingHorizontal: 12,
                   paddingVertical: 8,
@@ -107,7 +129,7 @@ const Settings = () => {
                   borderColor: colors.border,
                 }}
               >
-                <Text style={{color: colors.text}}>{t}</Text>
+                <Text style={{color: colors.text}}>{t[0]}</Text>
               </TouchableOpacity>
             ))}
           </View>

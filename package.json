@@ -20,12 +20,16 @@
     "@rnmapbox/maps": "^10.2.7",
     "react": "19.1.0",
     "react-native": "0.81.1",
+    "react-native-gesture-handler": "^2.29.1",
     "react-native-get-random-values": "^1.11.0",
     "react-native-image-picker": "^8.2.1",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-maps": "^1.26.18",
+    "react-native-reanimated": "^4.1.5",
     "react-native-safe-area-context": "^5.6.1",
     "react-native-screens": "^4.16.0",
+    "react-native-worklets": "^0.6.1",
+    "reanimated-color-picker": "^4.1.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
