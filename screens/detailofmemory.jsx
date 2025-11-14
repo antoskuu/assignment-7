@@ -23,6 +23,26 @@ const MemoryDetailScreen = ({route}) => {
         </TouchableOpacity>        
         <Text style={styles.text}>{memory.title}</Text>
         <Text style={styles.text}>Location: {memory.location}</Text>
+        <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
+                    {memory.tags.map((t) => (
+                      <TouchableOpacity
+                        key={t[0]}
+                        onPress={() => removeTag(t)}
+                        style={{
+                          backgroundColor: t[1],
+                          borderRadius: 16,
+                          paddingHorizontal: 12,
+                          paddingVertical: 8,
+                          marginRight: 8,
+                          marginBottom: 8,
+                          borderWidth: 1,
+                          borderColor: '#fff',
+                        }}
+                      >
+                        <Text style={{color: '#000'}}>{t[0]}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
         {memory.image && (
             <Image 
                 source={{uri: memory.image}} 

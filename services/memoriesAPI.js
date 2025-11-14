@@ -23,7 +23,7 @@ const getUserId = async () => {
 
 
 
-export const uploadMemory = async (file, title, location) => {
+export const uploadMemory = async (file, title, location, tags) => {
     try {
         const userId = await getUserId();
         console.log('userId:', userId);
@@ -38,6 +38,7 @@ export const uploadMemory = async (file, title, location) => {
             type: file.type || 'image/jpeg',
             name: file.fileName || 'memory.jpg'
         });
+        formData.append('tags', tags);
 
         console.log('Sending request to:', `${API_BASE}/upload_memory`);
         console.log('File data:', {
@@ -45,7 +46,7 @@ export const uploadMemory = async (file, title, location) => {
             type: file.type,
             name: file.fileName
         });
-
+        console.log('data being sent:', { user_id: userId, title, location, tags });
         const response = await fetch(`${API_BASE}/upload_memory`, {
             method: 'POST',
             body: formData,

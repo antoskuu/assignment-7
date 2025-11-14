@@ -7,7 +7,6 @@ import styles from '../styles/styles.jsx';
 import CardGrid from '../components/cardGrid.jsx';
 import { getCategories } from '../services/productsApi.js';
 
-Mapbox.setAccessToken('pk.eyJ1IjoiYW50b3NrdXUiLCJhIjoiY21oeGEwOTdoMDA3YTJsczhoZzZ0azN5YSJ9.mF703yMII86IKPr3XrvvYQ');
 
 const MapScreen = () => {
     const { colors } = useTheme();
