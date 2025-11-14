@@ -135,9 +135,9 @@ export const getTags = async () => {
             return [];
         }
         const data = await response.json();
-        console.log('Tags fetched:', data);
-        console.log('Type of data:', typeof data);
+        console.log('getTags:', data);
         return data ? data : [];
+        
     } catch (error) {
         console.error('Error in getTags:', error);
         return [];
@@ -149,8 +149,8 @@ export const uploadTags = async (tags) => {
         const userId = await getUserId();
         
         const formData = new FormData();
-        formData.append('tags', JSON.stringify(tags));
-
+        formData.append('tags', tags);
+        console.log("Uploading tags:", tags);
         const response = await fetch(`${API_BASE}/tags/${userId}`, {
             method: 'POST',
             body: formData,

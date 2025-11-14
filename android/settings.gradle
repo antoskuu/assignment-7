@@ -14,7 +14,7 @@ dependencyResolutionManagement {
             }
             credentials {
                 username = "mapbox"
-                password = System.getenv("MAPBOX_ACCESS_TOKEN")
+                password = settings.hasProperty('MAPBOX_ACCESS_TOKEN') ? settings.getProperty('MAPBOX_ACCESS_TOKEN') : System.getenv("MAPBOX_ACCESS_TOKEN")
             }
         }
     }

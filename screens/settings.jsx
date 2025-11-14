@@ -7,33 +7,38 @@ import { useFocusEffect } from '@react-navigation/native';
 import { uploadTags } from '../services/memoriesAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CardGrid from '../components/cardGrid';
+import { runOnJS } from 'react-native-reanimated';
 
 import ColorPicker, { Panel1, Swatches, Preview, OpacitySlider, HueSlider, Panel5 } from 'reanimated-color-picker';
 
 const Settings = () => {
   const { themeName, setThemeName } = useContext(ThemeContext); 
   const { colors } = useTheme();
-  const [ tags, setTags] = useState([]);
+  const [ tags, setTags] = useState([[]]);
   const [language, setLanguage] = useState('English');
-  const [newTag, setNewTag] = useState('');
   const [showColorModal, setShowColorModal] = useState(false);
+  const [hex, setHex] = useState('#ffffff');
+  const [newTag, setNewTag] = useState('');
+
 
   const addTag = async () => {
-    const t = (newTag || '').trim();
+    const t = [newTag, hex];
+    console.log('Adding tag:', t);
     if (!t) return;
     if (tags.includes(t)) {
       setNewTag('');
       return;
     }
+
     const updated = [t, ...tags];
     setTags(updated);
     setNewTag('');
     try { await uploadTags(updated); } catch (e) { console.error('uploadTags error', e); }
   };
 const onSelectColor = ({ hex }) => {
+
     'worklet';
-    // do something with the selected color.
-    console.log(hex);
+    runOnJS(setHex)(hex);
   };
   const removeTag = async (tagToRemove) => {
     const updated = tags.filter(t => t !== tagToRemove);
@@ -48,7 +53,7 @@ const onSelectColor = ({ hex }) => {
     load();
     const fetchTags = async () => {
       const data = await getTags();
-      setTags(data[0]);
+      setTags(data);
       console.log('Fetched tags in settings:', data);
       console.log('test',data[0])
     };
@@ -94,26 +99,21 @@ const onSelectColor = ({ hex }) => {
                   marginRight: 8,
                 }}
               />
-                  <View style={styles.container}>
-<TouchableOpacity onPress={() => setShowColorModal(true)} style={{backgroundColor: colors.primary, paddingHorizontal: 12, justifyContent: 'center', borderRadius: 8}}>
-                <Text style={{color: '#fff'}}>Add</Text>
+                  <View>
+              <TouchableOpacity onPress={() => setShowColorModal(!showColorModal)} style={{backgroundColor: hex, padding: 12, justifyContent: 'center', borderRadius: 8,width:40, height: 40}}>
               </TouchableOpacity>
-      <Modal visible={showColorModal} animationType='slide'>
-        <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColor}>
-        <Panel5 />
-          <Preview />
-        </ColorPicker>
-
-        <TouchableOpacity title='Ok' onPress={() => setShowColorModal(false)} />
-      </Modal>
+      
+      
+      
     </View>
-              <TouchableOpacity onPress={addTag} style={{backgroundColor: colors.primary, paddingHorizontal: 12, justifyContent: 'center', borderRadius: 8}}>
+              <TouchableOpacity onPress={addTag} style={{backgroundColor: colors.primary, padding: 12, justifyContent: 'center', borderRadius: 8, height: 40}}>
                 <Text style={{color: '#fff'}}>Add</Text>
               </TouchableOpacity>
             </View>
 
           <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
             {tags.map((t) => (
+              console.log("tags mapping:", t),
               console.log('Rendering tag:', t[0]),
               <TouchableOpacity
                 key={t[0]}
@@ -134,7 +134,19 @@ const onSelectColor = ({ hex }) => {
             ))}
           </View>
         </View>
+<View>
+        {showColorModal &&
+        <ColorPicker style={{ width: '70%' }} onComplete={onSelectColor}>
+        <Panel5 />
+        
 
+          <TouchableOpacity onPress={() => setShowColorModal(false)} style={{backgroundColor: colors.primary, paddingHorizontal: 12, justifyContent: 'center', borderRadius: 8}}>
+                <Text style={{color: '#fff'}}>Ok</Text>
+              </TouchableOpacity>
+        </ColorPicker>
+        
+        }
+      </View>
       <View style={{marginBottom: 12}}>
         <Text style={{marginBottom: 6, color: colors.text}}>Language</Text>
         <TouchableOpacity

@@ -41,7 +41,7 @@ const MapScreen = () => {
 
             >
                 <Mapbox.Camera
-                    zoomLevel={1}
+                    zoomLevel={11}
                     centerCoordinate={[-122.4324, 37.78825]}
                     animationMode="flyTo"
                 />
