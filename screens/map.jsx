@@ -31,8 +31,11 @@ const MapScreen = () => {
                 const data = await getMemories();
                 const memoriesArray = Array.isArray(data) ? data : (data?.memories || []);
                 console.log(memoriesArray);
-                setMarkers(memoriesArray);
-                {markers.map((marker) => (console.log('là:',marker.location)))};
+                const markersWithParsedLocation = memoriesArray.map(marker => ({
+            ...marker,
+            location: JSON.parse(marker.location)
+        }));
+                setMarkers(markersWithParsedLocation);
                     
             };
 
