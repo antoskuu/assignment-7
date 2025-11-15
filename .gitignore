@@ -77,4 +77,4 @@ yarn-error.log
 ./mobile_ntnu.sh
 *.sh
 .env
-/android/gradle.properties
+android/gradle.properties
