@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import { View, Text, ScrollView } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -6,29 +6,36 @@ import Mapbox from '@rnmapbox/maps';
 import styles from '../styles/styles.jsx';
 import CardGrid from '../components/cardGrid.jsx';
 import { getCategories } from '../services/productsApi.js';
-
+import { useFocusEffect } from "@react-navigation/native";
+import { getMemories } from "../services/memoriesAPI.js";
 
 const MapScreen = () => {
     const { colors } = useTheme();
     const navigation = useNavigation();
-    const [categories, setCategories] = useState([]);
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            const data = await getCategories();
-            setCategories(data);
-        };
-        fetchCategories();
-    }, []);
+    const [markers, setMarkers] = useState([
+        { id: 1, coordinate: [-122.4324, 37.78825], title: "Marqueur 1" },
+        { id: 2, coordinate: [-122.4424, 37.79825], title: "Marqueur 2" },
+    ]);
 
-    const handleCategoryPress = (category) => {
-        console.log("clicked");
-        navigation.navigate('CategoryDetail', {
-            categoryTitle: category.title,
-            categoryItems: category.items,
-        });
-    };
+    useFocusEffect(
+        useCallback(() => {
+            const load = async () => {
+                fetchMarkers();
+            };
+            load();
+        }, [])
+    );
     
+    const fetchMarkers = async () => {
+                const data = await getMemories();
+                const memoriesArray = Array.isArray(data) ? data : (data?.memories || []);
+                console.log(memoriesArray);
+                setMarkers(memoriesArray);
+                {markers.map((marker) => (console.log('là:',marker.location)))};
+                    
+            };
+
     return (
         <View style={{ backgroundColor: colors.background }}>
             <Text style={{ ...styles.title, color: colors.text }}>Map</Text>
@@ -40,13 +47,29 @@ const MapScreen = () => {
 
             >
                 <Mapbox.Camera
-                    zoomLevel={11}
+                    zoomLevel={5}
                     centerCoordinate={[-122.4324, 37.78825]}
                     animationMode="flyTo"
                 />
+                {markers.map((marker) => (
+                    <Mapbox.PointAnnotation
+                        key={marker.id}
+                        id={`marker-${marker.id}`}
+                        coordinate={marker.location}
+                    >
+                        <View style={{
+                            width: 30,
+                            height: 30,
+                            backgroundColor: colors.primary || 'red',
+                            borderRadius: 15,
+                            borderWidth: 2,
+                            borderColor: 'white',
+                        }} />
+                        <Mapbox.Callout title={marker.title} />
+                    </Mapbox.PointAnnotation>
+                ))}
             </Mapbox.MapView>
             
-            <CardGrid cart_bool={false} items={categories} onItemPress={handleCategoryPress}/>
         </View>
     )
 }
