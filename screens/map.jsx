@@ -49,7 +49,7 @@ const MapScreen = () => {
                     onPress={() => setSelectedMarker(null)}
                 >
                     <Mapbox.Camera
-                        zoomLevel={15}
+                        zoomLevel={6}
                         centerCoordinate={[-122.4324, 37.78825]}
                         animationMode="flyTo"
                     />

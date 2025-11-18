@@ -60,14 +60,17 @@ const Create = () => {
         requestLocationPermission();
     }, []));
 
-    const toggleTag = (tag) => {
+    const toggleTag = (tag, tagIndex) => {
         setSelectedTags(prevTags => {
-            const tagId = tag[0];
-            // Si le tag est déjà sélectionné, on le retire
-            if (prevTags.some(t => t[0] === tagId)) {
-            return prevTags.filter(t => t[0] !== tagId);
+            // On cherche si ce tag spécifique (par index) est déjà sélectionné
+            const existingIndex = prevTags.findIndex(t => t.index === tagIndex);
+            
+            if (existingIndex !== -1) {
+                // Si trouvé, on le retire
+                return prevTags.filter((_, i) => i !== existingIndex);
             }
-            return [...prevTags, tag];
+            // Sinon, on l'ajoute avec son index
+            return [...prevTags, { tag, index: tagIndex }];
         });
         };
 
@@ -103,7 +106,8 @@ const Create = () => {
 const sendMemory = async () => {
     setLoading(true);
     try {
-        const data = await uploadMemory(formData.file, formData.title, [location.longitude, location.latitude], selectedTags);
+        const tagsToSend = selectedTags.map(st => st.tag);
+        const data = await uploadMemory(formData.file, formData.title, [location.longitude, location.latitude], tagsToSend);
     } catch (error) {
         console.error('Error uploading memory:', error);
     } finally {
@@ -144,21 +148,21 @@ const sendMemory = async () => {
             />
             
                     <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginLeft: 20}}>
-                        {tags.map((t) => (
+                        {tags.map((t, index) => (
                         <TouchableOpacity
-                            key={t[0]}
-                            onPress={() =>  { toggleTag(t) }}
+                            key={`${t[0]}-${index}`}
+                            onPress={() =>  { toggleTag(t, index) }}
                             style={{
                             
                             backgroundColor: t[1],
-                            opacity: selectedTags.some(st => st[0] === t[0]) ? 1 : 0.2,
+                            opacity: selectedTags.some(st => st.index === index) ? 1 : 0.2,
                             borderRadius: 16,
                             paddingHorizontal: 12,
                             paddingVertical: 8,
                             marginRight: 8,
                             marginBottom: 8,
                             borderWidth: 3,
-                            borderColor: selectedTags.some(st => st[0] === t[0]) ? colors.text : colors.border,
+                            borderColor: selectedTags.some(st => st.index === index) ? colors.text : colors.border,
                             }}
                         >
                             <Text style={{color: colors.text}}>{t[0]}</Text>
