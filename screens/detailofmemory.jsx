@@ -77,7 +77,7 @@ const { memory: memoryFromRoute } = route.params;
         
     <Mapbox.MapView
                     style={{ height: 300, width: '100%' }}
-                    styleURL={Mapbox.StyleURL.Satellite}
+                    styleURL={Mapbox.StyleURL.Streets}
                         projection="globe"
     
                 >
@@ -92,14 +92,6 @@ const { memory: memoryFromRoute } = route.params;
                             id={`marker-${memory.id}`}
                             coordinate={memory.location}
                         >
-                            <View style={{
-                                width: 30,
-                                height: 30,
-                                backgroundColor: colors.primary || 'red',
-                                borderRadius: 15,
-                                borderWidth: 2,
-                                borderColor: 'white',
-                            }} />
                         </Mapbox.PointAnnotation>
                     
                 </Mapbox.MapView>
