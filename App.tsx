@@ -14,6 +14,7 @@ import MemoryDetailScreen from './screens/detailofmemory.jsx';
 import Create from './screens/create.jsx';
 import Settings from './screens/settings.jsx';
 import { MyLightTheme, MyDarkTheme } from './styles/themes.js';
+import { translations } from './utils/translations.js';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -31,7 +32,20 @@ export const ThemeContext = createContext<ThemeContextType>({
   toggleTheme: () => {},
 });
 
+type LanguageContextType = {
+  language: string;
+  setLanguage: (lang: string) => void;
+  t: (key: string) => string;
+};
+
+export const LanguageContext = createContext<LanguageContextType>({
+  language: 'English',
+  setLanguage: () => {},
+  t: (key: string) => key,
+});
+
 const THEME_KEY = 'app.theme';
+const LANGUAGE_KEY = 'settings_language';
 
 function HomeStack() {
   return (
@@ -61,6 +75,7 @@ function SettingsStack() {
 
 export default function App() {
   const [themeName, setThemeName] = useState<AppThemeName>('light');
+  const [language, setLanguage] = useState<string>('English');
 
   // Charger le thème sauvegardé
   useEffect(() => {
@@ -74,14 +89,40 @@ export default function App() {
     })();
   }, []);
 
+  // Charger la langue sauvegardée
+  useEffect(() => {
+    (async () => {
+      try {
+        const savedLang = await AsyncStorage.getItem(LANGUAGE_KEY);
+        if (savedLang) setLanguage(savedLang);
+      } catch {
+        // ignore
+      }
+    })();
+  }, []);
+
   // Sauvegarder à chaque changement
   useEffect(() => {
     AsyncStorage.setItem(THEME_KEY, themeName).catch(() => {});
   }, [themeName]);
 
+  // Sauvegarder la langue à chaque changement
+  useEffect(() => {
+    AsyncStorage.setItem(LANGUAGE_KEY, language).catch(() => {});
+  }, [language]);
+
   const toggleTheme = useCallback(
     () => setThemeName((t) => (t === 'light' ? 'dark' : 'light')),
     []
+  );
+
+  const t = useCallback(
+    (key: string) => {
+      const lang = language as keyof typeof translations;
+      const langObj = translations[lang] as Record<string, string>;
+      return langObj?.[key] || key;
+    },
+    [language]
   );
 
   const ctx = useMemo(
@@ -89,78 +130,85 @@ export default function App() {
     [themeName, toggleTheme]
   );
 
+  const langCtx = useMemo(
+    () => ({ language, setLanguage, t }),
+    [language, t]
+  );
+
   const navTheme = themeName === 'dark' ? MyDarkTheme : MyLightTheme;
 
   return (
-    <ThemeContext.Provider value={ctx}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: navTheme.colors.background }}>
-        <StatusBar barStyle={themeName === 'dark' ? 'light-content' : 'dark-content'} />
-        <NavigationContainer theme={navTheme}>
-          <Tab.Navigator
-            screenOptions={{
-              headerShown: false,
-              tabBarActiveTintColor: navTheme.colors.primary,
-            }}
-          >
-            <Tab.Screen
-              name="HomeTab"
-              component={HomeStack}
-              options={{
-                tabBarIcon: ({ color, size, focused }) => (
-                  <Image
-                    source={require('./assets/app/home.png')}
-                    style={{ width: size, height: size, tintColor: color, opacity: focused ? 1 : 0.6 }}
-                    resizeMode="contain"
-                  />
-                ),
-                tabBarLabel: 'Home',
+    <LanguageContext.Provider value={langCtx}>
+      <ThemeContext.Provider value={ctx}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: navTheme.colors.background }}>
+          <StatusBar barStyle={themeName === 'dark' ? 'light-content' : 'dark-content'} />
+          <NavigationContainer theme={navTheme}>
+            <Tab.Navigator
+              screenOptions={{
+                headerShown: false,
+                tabBarActiveTintColor: navTheme.colors.primary,
               }}
-            />
-            <Tab.Screen
-              name="MapPage"
-              component={MapStack}
-              options={{
-                tabBarIcon: ({ color, size, focused }) => (
-                  <Image
-                    source={require('./assets/app/map.png')}
-                    style={{ width: size, height: size, tintColor: color, opacity: focused ? 1 : 0.6 }}
-                    resizeMode="contain"
-                  />
-                ),
-                tabBarLabel: 'Map',
-              }}
-            />
-            <Tab.Screen
-              name="CreatePage"
-              component={Create}
-              options={{
-                tabBarIcon: ({ color, size, focused }) => (
-                  <Image
-                    source={require('./assets/app/plus.png')}
-                    style={{ width: size, height: size, tintColor: color, opacity: focused ? 1 : 0.6 }}
-                    resizeMode="contain"
-                  />
-                ),
-                tabBarLabel: 'Create',
-              }}
-            />
-            <Tab.Screen
-              name="SettingsPage"
-              component={SettingsStack}
-              options={{
-                tabBarIcon: ({ color, size, focused }) => (
-                  <Image
-                    source={require('./assets/app/profile.png')}
-                    style={{ width: size, height: size, tintColor: color, opacity: focused ? 1 : 0.6 }}
-                    resizeMode="contain"
-                  />
-                ),
-                tabBarLabel: 'Settings',
-              }}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
-    </ThemeContext.Provider>
+            >
+              <Tab.Screen
+                name="HomeTab"
+                component={HomeStack}
+                options={{
+                  tabBarIcon: ({ color, size, focused }) => (
+                    <Image
+                      source={require('./assets/app/home.png')}
+                      style={{ width: size, height: size, tintColor: color, opacity: focused ? 1 : 0.6 }}
+                      resizeMode="contain"
+                    />
+                  ),
+                  tabBarLabel: t('home'),
+                }}
+              />
+              <Tab.Screen
+                name="MapPage"
+                component={MapStack}
+                options={{
+                  tabBarIcon: ({ color, size, focused }) => (
+                    <Image
+                      source={require('./assets/app/map.png')}
+                      style={{ width: size, height: size, tintColor: color, opacity: focused ? 1 : 0.6 }}
+                      resizeMode="contain"
+                    />
+                  ),
+                  tabBarLabel: t('map'),
+                }}
+              />
+              <Tab.Screen
+                name="CreatePage"
+                component={Create}
+                options={{
+                  tabBarIcon: ({ color, size, focused }) => (
+                    <Image
+                      source={require('./assets/app/plus.png')}
+                      style={{ width: size, height: size, tintColor: color, opacity: focused ? 1 : 0.6 }}
+                      resizeMode="contain"
+                    />
+                  ),
+                  tabBarLabel: t('create'),
+                }}
+              />
+              <Tab.Screen
+                name="SettingsPage"
+                component={SettingsStack}
+                options={{
+                  tabBarIcon: ({ color, size, focused }) => (
+                    <Image
+                      source={require('./assets/app/profile.png')}
+                      style={{ width: size, height: size, tintColor: color, opacity: focused ? 1 : 0.6 }}
+                      resizeMode="contain"
+                    />
+                  ),
+                  tabBarLabel: t('settings'),
+                }}
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </SafeAreaView>
+      </ThemeContext.Provider>
+    </LanguageContext.Provider>
   );
 }

@@ -11,11 +11,13 @@ import { launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { ActivityIndicator } from "react-native";
 import { getTags } from "../services/memoriesAPI.js";
 import Geolocation from '@react-native-community/geolocation';
+import { LanguageContext } from '../App';
 
 
 
 const Create = () => {
     const { colors } = useTheme();
+    const { t } = React.useContext(LanguageContext);
     const [formData, setFormData] = useState({});
     const [loading, setLoading] = useState(false);
     const [location, setLocation] = useState(null);
@@ -123,12 +125,12 @@ const sendMemory = async () => {
         <ScrollView>
             <View style={{backgroundColor: colors.background}}>
                 
-                <Text style={{...styles.title, color: colors.text}}>Create</Text>
+                <Text style={{...styles.title, color: colors.text}}>{t('create')}</Text>
                 <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 8 }}>
                 </View>
             </View>
             <TextInput
-                placeholder="Title"
+                placeholder={t('title')}
                 placeholderTextColor="#888"
                 value={formData.title || ''}
                 style={{
@@ -163,20 +165,21 @@ const sendMemory = async () => {
                         </TouchableOpacity>
                         ))}
                     </View>
-            <Text style={{...styles.text, marginLeft: 10, color: colors.text}}>Location: {location ? `Lat: ${location.latitude}, Lon: ${location.longitude}` : 'Fetching location...'}</Text>   
-            
+            <View style={{backgroundColor: location? "green" : "orange", alignItems: 'center', justifyContent: 'center', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 5, width: 150, alignSelf: 'center'}}>
+            <Text style={{...styles.text, color: colors.text}}>{location ? t('locationLoaded') : t('fetchingLocation')}</Text>   
+            </View>
             {imagePickerVisible &&
             <View style={{height: 300, flexDirection: 'row', backgroundColor: colors.card, borderWidth: 3, borderColor: colors.border, borderRadius: 20, borderStyle: 'dotted', margin:20,  alignItems: 'center', justifyContent: 'center'}} >
             
             <TouchableOpacity onPress={pickImage} style={{ backgroundColor: colors.background, padding: 15, borderRadius: 20, margin:10, flexDirection: 'row', alignItems: 'center'}}>
                 <Image source={require('../assets/app/gallery.png')} style={{width: 16, height: 16, tintColor: colors.text, margin: 4}} />
-                <Text style={{color: colors.text}}>Pick Image</Text>
+                <Text style={{color: colors.text}}>{t('pickImage')}</Text>
 
             </TouchableOpacity>
             {loading && <ActivityIndicator size="small" color={colors.primary} />}
             <TouchableOpacity onPress={takePhoto} style={{ backgroundColor: colors.background, padding: 15, borderRadius: 20, margin:10, flexDirection: 'row', alignItems: 'center'}}>
                 <Image source={require('../assets/app/camera.png')} style={{width: 24, height: 24, tintColor: colors.text}} />
-                <Text style={{color: colors.text}}>Take Photo</Text>
+                <Text style={{color: colors.text}}>{t('takePhoto')}</Text>
 
             </TouchableOpacity>
             
