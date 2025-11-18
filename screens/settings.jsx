@@ -16,7 +16,6 @@ const Settings = () => {
   const { colors } = useTheme();
   const [ tags, setTags] = useState([[]]);
   const [language, setLanguage] = useState('English');
-  const [showColorModal, setShowColorModal] = useState(false);
   const [hex, setHex] = useState('#ffffff');
   const [newTag, setNewTag] = useState('');
 
@@ -78,73 +77,6 @@ const onSelectColor = ({ hex }) => {
           thumbColor={themeName === 'dark' ? '#f4f3f4' : '#f4f3f4'}
         />
       </View>
-
-          <View style={{marginBottom: 12}}>
-            <Text style={{marginBottom: 6, color: colors.text}}>Tags</Text>
-            <View style={{flexDirection: 'row', marginBottom: 8}}>
-              <TextInput
-                value={newTag}
-                onChangeText={setNewTag}
-                placeholder="Add tag"
-                placeholderTextColor={colors.text + '88'}
-                style={{
-                  flex: 1,
-                  backgroundColor: colors.card,
-                  borderRadius: 8,
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  color: colors.text,
-                  borderWidth: 1,
-                  borderColor: colors.border,
-                  marginRight: 8,
-                }}
-              />
-                  <View>
-              <TouchableOpacity onPress={() => setShowColorModal(!showColorModal)} style={{backgroundColor: hex, padding: 12, justifyContent: 'center', borderRadius: 8,width:40, height: 40}}>
-              </TouchableOpacity>
-      
-      
-      
-    </View>
-              <TouchableOpacity onPress={addTag} style={{backgroundColor: colors.primary, padding: 12, justifyContent: 'center', borderRadius: 8, height: 40}}>
-                <Text style={{color: '#fff'}}>Add</Text>
-              </TouchableOpacity>
-            </View>
-
-          <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
-            {tags.map((t, index) => (
-              <TouchableOpacity
-                key={`${t[0]}-${index}`}
-                onPress={() => removeTag(t)}
-                style={{
-                  backgroundColor: t[1],
-                  borderRadius: 16,
-                  paddingHorizontal: 12,
-                  paddingVertical: 8,
-                  marginRight: 8,
-                  marginBottom: 8,
-                  borderWidth: 1,
-                  borderColor: colors.border,
-                }}
-              >
-                <Text style={{color: colors.text}}>{t[0]}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-<View>
-        {showColorModal &&
-        <ColorPicker style={{ width: '70%' }} onComplete={onSelectColor}>
-        <Panel5 />
-        
-
-          <TouchableOpacity onPress={() => setShowColorModal(false)} style={{backgroundColor: colors.primary, paddingHorizontal: 12, justifyContent: 'center', borderRadius: 8}}>
-                <Text style={{color: '#fff'}}>Ok</Text>
-              </TouchableOpacity>
-        </ColorPicker>
-        
-        }
-      </View>
       <View style={{marginBottom: 12}}>
         <Text style={{marginBottom: 6, color: colors.text}}>Language</Text>
         <TouchableOpacity
@@ -157,6 +89,67 @@ const onSelectColor = ({ hex }) => {
           <Text style={{color: colors.text}}>{language}</Text>
         </TouchableOpacity>
       </View>
+
+          <View style={{marginBottom: 12}}>
+            <Text style={{marginBottom: 6, color: colors.text}}>Tags</Text>
+            <View style={{flexDirection: 'row', marginBottom: 8}}>
+              <TextInput
+                value={newTag}
+                onChangeText={setNewTag}
+                placeholder="Add tag"
+                placeholderTextColor={colors.text + '88'}
+                style={{
+                  flex: 1,
+                  backgroundColor: hex,
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  color: colors.text,
+                  borderWidth: 1,
+                  borderColor: colors.border,
+                  marginRight: 8,
+                }}
+              />
+              <TouchableOpacity onPress={addTag} style={{backgroundColor: colors.primary, padding: 12, justifyContent: 'center', borderRadius: 8, height: 40}}>
+                <Text style={{color: '#fff'}}>Add</Text>
+              </TouchableOpacity>
+            </View>
+
+          <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
+            {tags.map((t, index) => (
+              <TouchableOpacity
+                key={`${t[0]}-${index}`}
+                style={{
+                  backgroundColor: t[1],
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  marginRight: 8,
+                  marginBottom: 8,
+                  borderWidth: 1,
+                  borderColor: colors.border,
+                  flexDirection: 'row',
+                }}
+              >
+                <Text style={{color: colors.text}}>{t[0]}</Text>
+                <TouchableOpacity onPress={() => removeTag(t)} style={{marginLeft: 8}}>
+                  <Text style={{color: '#f00', fontWeight: 'bold'}}>×</Text>
+              </TouchableOpacity>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+<View>
+        
+        <ColorPicker style={{ width: '70%' }} onComplete={onSelectColor}>
+        <Panel5 />
+        
+
+        </ColorPicker>
+        
+        
+      </View>
+      
     </ScrollView>
   );
 };

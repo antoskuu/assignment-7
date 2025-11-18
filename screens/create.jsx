@@ -7,7 +7,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getUserId } from "../services/memoriesAPI.js";
 import { useTheme } from '@react-navigation/native';
 import { uploadMemory } from "../services/memoriesAPI.js";
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { ActivityIndicator } from "react-native";
 import { getTags } from "../services/memoriesAPI.js";
 import Geolocation from '@react-native-community/geolocation';
@@ -21,6 +21,8 @@ const Create = () => {
     const [location, setLocation] = useState(null);
     const [tags, setTags] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
+    const [imagePickerVisible, setImagePickerVisible] = useState(true);
+
     useEffect(() => {
     console.log('Selected tags updated:', selectedTags);
 }, [selectedTags]);
@@ -75,6 +77,7 @@ const Create = () => {
         
         if (!result.didCancel && result.assets) {
             setFormData({...formData, file: result.assets[0]});
+            setImagePickerVisible(false);
         }
     };
 
@@ -86,18 +89,33 @@ const Create = () => {
         
         if (!result.didCancel && result.assets) {
             setFormData({...formData, file: result.assets[0]});
+            setImagePickerVisible(false);
         }
+    };
+    const removeImage = () => {
+        setFormData({...formData, file: null});
+        setImagePickerVisible(true);
+
     };
 
 const sendMemory = async () => {
     setLoading(true);
     try {
-        const data = await uploadMemory(formData.file, formData.title, [location.latitude, location.longitude], selectedTags);
+        const data = await uploadMemory(formData.file, formData.title, [location.longitude, location.latitude], selectedTags);
     } catch (error) {
         console.error('Error uploading memory:', error);
     } finally {
         setLoading(false);
-    }s
+        setImagePickerVisible(true);
+        setFormData({
+            title: '',
+            file: null,
+            location: null,
+            tags: []
+        });
+        setSelectedTags([]);
+
+    }
 };
         
 
@@ -111,51 +129,72 @@ const sendMemory = async () => {
             </View>
             <TextInput
                 placeholder="Title"
+                placeholderTextColor="#888"
+                value={formData.title || ''}
                 style={{
                     backgroundColor: colors.card,
                     borderRadius: 8,
                     padding: 12,
-                    margin: 10,
+                    margin: 30,
                     color: colors.text,
                 }}
     onChangeText={(text) => setFormData({...formData, title: text, location: location, tags: selectedTags})}
             />
             
-                      <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
+                    <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginLeft: 20}}>
                         {tags.map((t) => (
-                          <TouchableOpacity
+                        <TouchableOpacity
                             key={t[0]}
                             onPress={() =>  { toggleTag(t) }}
                             style={{
                             
-                              backgroundColor: t[1],
-                              opacity: selectedTags.some(st => st[0] === t[0]) ? 1 : 0.2,
-                              borderRadius: 16,
-                              paddingHorizontal: 12,
-                              paddingVertical: 8,
-                              marginRight: 8,
-                              marginBottom: 8,
-                              borderWidth: 3,
-                              borderColor: selectedTags.some(st => st[0] === t[0]) ? colors.text : colors.border,
+                            backgroundColor: t[1],
+                            opacity: selectedTags.some(st => st[0] === t[0]) ? 1 : 0.2,
+                            borderRadius: 16,
+                            paddingHorizontal: 12,
+                            paddingVertical: 8,
+                            marginRight: 8,
+                            marginBottom: 8,
+                            borderWidth: 3,
+                            borderColor: selectedTags.some(st => st[0] === t[0]) ? colors.text : colors.border,
                             }}
-                          >
+                        >
                             <Text style={{color: colors.text}}>{t[0]}</Text>
-                          </TouchableOpacity>
+                        </TouchableOpacity>
                         ))}
-                      </View>
+                    </View>
             <Text style={{...styles.text, marginLeft: 10, color: colors.text}}>Location: {location ? `Lat: ${location.latitude}, Lon: ${location.longitude}` : 'Fetching location...'}</Text>   
-            <View style={{height: 10, flexDirection: 'row'}} >
-            <TouchableOpacity onPress={pickImage} style={{backgroundColor: colors.primary, padding: 50, borderRadius: 8, margin: 10, alignItems: 'center'}}>
-                <Image source={require('../assets/app/gallery.png')} style={{width: 24, height: 24, tintColor: colors.text, marginLeft: 8}} />
+            
+            {imagePickerVisible &&
+            <View style={{height: 300, flexDirection: 'row', backgroundColor: colors.card, borderWidth: 3, borderColor: colors.border, borderRadius: 20, borderStyle: 'dotted', margin:20,  alignItems: 'center', justifyContent: 'center'}} >
+            
+            <TouchableOpacity onPress={pickImage} style={{ backgroundColor: colors.background, padding: 15, borderRadius: 20, margin:10, flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={require('../assets/app/gallery.png')} style={{width: 16, height: 16, tintColor: colors.text, margin: 4}} />
+                <Text style={{color: colors.text}}>Pick Image</Text>
+
             </TouchableOpacity>
             {loading && <ActivityIndicator size="small" color={colors.primary} />}
-            <TouchableOpacity onPress={takePhoto} style={{backgroundColor: colors.primary, padding: 50, borderRadius: 8, margin: 10, alignItems: 'center'}}>
-                <Image source={require('../assets/app/camera.png')} style={{width: 24, height: 24, tintColor: colors.text, marginLeft: 8}} />
+            <TouchableOpacity onPress={takePhoto} style={{ backgroundColor: colors.background, padding: 15, borderRadius: 20, margin:10, flexDirection: 'row', alignItems: 'center'}}>
+                <Image source={require('../assets/app/camera.png')} style={{width: 24, height: 24, tintColor: colors.text}} />
+                <Text style={{color: colors.text}}>Take Photo</Text>
+
             </TouchableOpacity>
+            
             </View>
-            {formData.file && <Image source={{uri: formData.file.uri}} style={{width: 200, height: 200, margin: 10}} />}
-            <TouchableOpacity onPress={sendMemory} style={{backgroundColor: colors.primary, padding: 50, borderRadius: 8, margin: 200, alignItems: 'center'}}>
-                <Image source={require('../assets/app/send.png')} style={{width: 24, height: 24, tintColor: colors.text, marginLeft: 8}} />
+            }
+
+            {!imagePickerVisible &&
+            <View style={{height: 450, flexDirection: 'row', backgroundColor: colors.card, borderWidth: 3, borderColor: colors.border, borderRadius: 20, borderStyle: 'dotted', margin:20,  alignItems: 'center', justifyContent: 'center', }} >
+                        <TouchableOpacity onPress={removeImage} style={{position: 'absolute', top: 10, right: 10, zIndex: 10, backgroundColor: 'rgba(0,0,0,0.1)', width: 30, height: 30, borderRadius: 15, alignItems: 'center', justifyContent: 'center'}}>
+                            <Text style={{ fontSize: 20, color: colors.text, fontWeight: 'bold' }}>×</Text>
+                        </TouchableOpacity>
+                        {formData.file && <Image source={{uri: formData.file.uri}} style={{width: '100%', height: '100%', margin: 10, borderRadius: 20}} />}
+
+            </View>
+            }
+            <TouchableOpacity onPress={sendMemory} style={{position: "absolute", top: 700, right: 20, backgroundColor: colors.primary, padding: 15, borderRadius: 20, }}>
+                <Image source={require('../assets/app/send.png')} style={{width: 24, height: 24, tintColor: colors.text, }} />
+                
             </TouchableOpacity>
         </ScrollView>
     )
