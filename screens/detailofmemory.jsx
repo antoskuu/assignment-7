@@ -3,14 +3,25 @@ import styles from '../styles/styles.jsx';
 import CardGrid from '../components/cardGrid.jsx'
 import { StatusBar, StyleSheet, useColorScheme, View, Text, Button, ScrollView, TouchableOpacity, ImageBackground, Image, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { useTheme } from '@react-navigation/native';
+import Mapbox from '@rnmapbox/maps';
+import {useEffect} from "react";
 const MemoryDetailScreen = ({route}) => {
-    const { memory } = route.params;
+const { memory: memoryFromRoute } = route.params;
+    const memory = {
+        ...memoryFromRoute,
+        location: typeof memoryFromRoute.location === 'string' 
+            ? JSON.parse(memoryFromRoute.location) 
+            : memoryFromRoute.location
+    };
+    const { colors } = useTheme();
     const navigation = useNavigation();
+    
+
 
     return (
     <ScrollView>
-    <View style={{backgroundColor: '#fff7c8ff'}}>
+    <View style={{backgroundColor: colors.background,flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
     <TouchableOpacity 
             onPress={() => navigation.goBack()}
             style={{
@@ -19,15 +30,28 @@ const MemoryDetailScreen = ({route}) => {
                 alignSelf: 'flex-start'
             }}
         >
-            <Text style={{ fontSize: 24 }}>←</Text>
+            <Text style={{ fontSize: 24, color: colors.text }}>←</Text>
+
         </TouchableOpacity>        
-        <Text style={styles.text}>{memory.title}</Text>
-        <Text style={styles.text}>Location: {memory.location}</Text>
+        
+        </View>
+
+    <View style={{width: '100%', backgroundColor: colors.card, padding: 20, borderRadius: 10}}>
+
+    <View style={{width: '100%', marginTop: 10}}>
+        {memory.image && (
+            <Image 
+                source={{uri: memory.image}} 
+                style={{width: '100%', aspectRatio: 1, resizeMode: 'cover', borderRadius: 10}} 
+            />
+        )}
+    </View>
+    <Text style={{...styles.text, fontSize: 24, color: colors.text, padding: 10, margin:10, textAlign: 'center'
+}}>{memory.title}</Text>
         <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
                     {memory.tags.map((t) => (
                       <TouchableOpacity
                         key={t[0]}
-                        onPress={() => removeTag(t)}
                         style={{
                           backgroundColor: t[1],
                           borderRadius: 16,
@@ -39,18 +63,49 @@ const MemoryDetailScreen = ({route}) => {
                           borderColor: '#fff',
                         }}
                       >
-                        <Text style={{color: '#000'}}>{t[0]}</Text>
+                        <Text style={{color: colors.text}}>{t[0]}</Text>
                       </TouchableOpacity>
                     ))}
-                  </View>
-        {memory.image && (
-            <Image 
-                source={{uri: memory.image}} 
-                style={{width: '100%', height: 300, resizeMode: 'cover'}} 
-            />
-        )}
     </View>
 
+    <View style={{
+        borderRadius: 10,
+        overflow: 'hidden',
+        marginTop: 10,
+        
+    }}>
+        
+    <Mapbox.MapView
+                    style={{ height: 300, width: '100%' }}
+                    styleURL={Mapbox.StyleURL.Satellite}
+                        projection="globe"
+    
+                >
+                    <Mapbox.Camera
+                        zoomLevel={10}
+
+                        centerCoordinate={memory.location}
+                        animationMode="flyTo"
+                    />
+                        <Mapbox.PointAnnotation
+                            key={memory.id}
+                            id={`marker-${memory.id}`}
+                            coordinate={memory.location}
+                        >
+                            <View style={{
+                                width: 30,
+                                height: 30,
+                                backgroundColor: colors.primary || 'red',
+                                borderRadius: 15,
+                                borderWidth: 2,
+                                borderColor: 'white',
+                            }} />
+                        </Mapbox.PointAnnotation>
+                    
+                </Mapbox.MapView>
+    </View>
+
+</View>
 </ScrollView>
     )
 

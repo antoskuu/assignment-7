@@ -24,7 +24,6 @@ const HomeScreen = ({navigation}) => {
     );
 
     const handleMemoryPress = (memory) => {
-        console.log("clicked", memory)
         navigation.navigate('MemoryDetail', {
             memory: memory,
         });
@@ -34,7 +33,6 @@ const HomeScreen = ({navigation}) => {
             const data = await getMemories();
             console.log('Fetched memories:', data);
             console.log('Is array?', Array.isArray(data));
-            // Si l'API retourne un objet avec une propriété contenant le tableau
             const memoriesArray = Array.isArray(data) ? data : (data?.memories || []);
             setMemories(memoriesArray);
         };

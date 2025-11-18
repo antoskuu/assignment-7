@@ -112,9 +112,9 @@ const onSelectColor = ({ hex }) => {
             </View>
 
           <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
-            {tags.map((t) => (
+            {tags.map((t, index) => (
               <TouchableOpacity
-                key={t[0]}
+                key={`${t[0]}-${index}`}
                 onPress={() => removeTag(t)}
                 style={{
                   backgroundColor: t[1],

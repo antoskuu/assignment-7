@@ -13,10 +13,7 @@ const MapScreen = () => {
     const { colors } = useTheme();
     const navigation = useNavigation();
 
-    const [markers, setMarkers] = useState([
-        { id: 1, coordinate: [-122.4324, 37.78825], title: "Marqueur 1" },
-        { id: 2, coordinate: [-122.4424, 37.79825], title: "Marqueur 2" },
-    ]);
+    const [markers, setMarkers] = useState([]);
 
     useFocusEffect(
         useCallback(() => {
@@ -36,6 +33,7 @@ const MapScreen = () => {
             location: JSON.parse(marker.location)
         }));
                 setMarkers(markersWithParsedLocation);
+                
                     
             };
 
@@ -50,11 +48,11 @@ const MapScreen = () => {
 
             >
                 <Mapbox.Camera
-                    zoomLevel={5}
+                    zoomLevel={15}
                     centerCoordinate={[-122.4324, 37.78825]}
                     animationMode="flyTo"
                 />
-                {markers.map((marker) => (
+                {markers.map((marker) => ( console.log('marker rendu', marker.location),
                     <Mapbox.PointAnnotation
                         key={marker.id}
                         id={`marker-${marker.id}`}

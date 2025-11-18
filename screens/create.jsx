@@ -4,7 +4,6 @@ import styles from '../styles/styles.jsx';
 import CardGrid from '../components/cardGrid.jsx'
 import { StatusBar, StyleSheet, useColorScheme, View, Text, Button, ScrollView, TouchableOpacity, ImageBackground, Image, Platform, TextInput, PermissionsAndroid } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-
 import { getUserId } from "../services/memoriesAPI.js";
 import { useTheme } from '@react-navigation/native';
 import { uploadMemory } from "../services/memoriesAPI.js";
@@ -137,7 +136,7 @@ const sendMemory = async () => {
                               marginRight: 8,
                               marginBottom: 8,
                               borderWidth: 3,
-                              borderColor: selectedTags.some(st => st[0] === t[0]) ? colors.primary : colors.border,
+                              borderColor: selectedTags.some(st => st[0] === t[0]) ? colors.text : colors.border,
                             }}
                           >
                             <Text style={{color: colors.text}}>{t[0]}</Text>
@@ -145,11 +144,19 @@ const sendMemory = async () => {
                         ))}
                       </View>
             <Text style={{...styles.text, marginLeft: 10, color: colors.text}}>Location: {location ? `Lat: ${location.latitude}, Lon: ${location.longitude}` : 'Fetching location...'}</Text>   
-            <Button title="Choisir une photo" onPress={pickImage} />
+            <View style={{height: 10, flexDirection: 'row'}} >
+            <TouchableOpacity onPress={pickImage} style={{backgroundColor: colors.primary, padding: 50, borderRadius: 8, margin: 10, alignItems: 'center'}}>
+                <Image source={require('../assets/app/gallery.png')} style={{width: 24, height: 24, tintColor: colors.text, marginLeft: 8}} />
+            </TouchableOpacity>
             {loading && <ActivityIndicator size="small" color={colors.primary} />}
-            <Button title="Prendre une photo" onPress={takePhoto} />
+            <TouchableOpacity onPress={takePhoto} style={{backgroundColor: colors.primary, padding: 50, borderRadius: 8, margin: 10, alignItems: 'center'}}>
+                <Image source={require('../assets/app/camera.png')} style={{width: 24, height: 24, tintColor: colors.text, marginLeft: 8}} />
+            </TouchableOpacity>
+            </View>
             {formData.file && <Image source={{uri: formData.file.uri}} style={{width: 200, height: 200, margin: 10}} />}
-            <Button title="Send Memory" onPress={sendMemory} />
+            <TouchableOpacity onPress={sendMemory} style={{backgroundColor: colors.primary, padding: 50, borderRadius: 8, margin: 200, alignItems: 'center'}}>
+                <Image source={require('../assets/app/send.png')} style={{width: 24, height: 24, tintColor: colors.text, marginLeft: 8}} />
+            </TouchableOpacity>
         </ScrollView>
     )
 }
