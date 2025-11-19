@@ -107,7 +107,7 @@ const sendMemory = async () => {
     setLoading(true);
     try {
         const tagsToSend = selectedTags.map(st => st.tag);
-        const data = await uploadMemory(formData.file, formData.title, [location.longitude, location.latitude], tagsToSend);
+        const data = await uploadMemory(formData.file, formData.title, formData.description || '', [location.longitude, location.latitude], tagsToSend);
     } catch (error) {
         console.error('Error uploading memory:', error);
     } finally {
@@ -141,12 +141,32 @@ const sendMemory = async () => {
                     backgroundColor: colors.card,
                     borderRadius: 8,
                     padding: 12,
-                    margin: 30,
+                    marginLeft: 30,
+                    marginRight: 30,
                     color: colors.text,
                 }}
     onChangeText={(text) => setFormData({...formData, title: text, location: location, tags: selectedTags})}
             />
-            
+             <TextInput
+                placeholder={t('description')}
+                placeholderTextColor="#888"
+                value={formData.description || ''}
+                multiline={true}
+                numberOfLines={4}
+                style={{
+                    backgroundColor: colors.card,
+                    borderRadius: 8,
+                    padding: 12,
+                    marginTop: 10,
+                    marginBottom: 20,
+                    marginLeft: 30,
+                    marginRight: 30,
+                    height: 100,
+                    textAlignVertical: 'top',
+                    color: colors.text,
+                }}
+    onChangeText={(text) => setFormData({...formData, description: text, location: location, tags: selectedTags})}
+            />
                     <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginLeft: 20}}>
                         {tags.map((t, index) => (
                         <TouchableOpacity

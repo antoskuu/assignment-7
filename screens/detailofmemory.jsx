@@ -48,6 +48,10 @@ const { memory: memoryFromRoute } = route.params;
     </View>
     <Text style={{...styles.text, fontSize: 24, color: colors.text, padding: 10, margin:10, textAlign: 'center'
 }}>{memory.title}</Text>
+    <Text style={{...styles.text, fontSize: 16, color: colors.text, paddingHorizontal: 10, marginBottom: 10, textAlign: 'center'
+}}>{memory.description}</Text>
+<Text style={{...styles.text, fontSize: 16, color: colors.text, paddingHorizontal: 10, marginBottom: 10, textAlign: 'center'
+}}>{new Date(memory.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</Text>
         <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
                     {memory.tags.map((t) => (
                       <TouchableOpacity

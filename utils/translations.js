@@ -15,6 +15,7 @@ export const translations = {
     fetchingLocation: 'Fetching location...',
     pickImage: 'Pick Image',
     takePhoto: 'Take Photo',
+    description: 'Description',
     
     // Home
     home: 'Home',
@@ -42,6 +43,7 @@ export const translations = {
     fetchingLocation: 'Henter plassering...',
     pickImage: 'Velg bilde',
     takePhoto: 'Ta bilde',
+    description: 'Beskrivelse',
     
     // Home
     home: 'Hjem',

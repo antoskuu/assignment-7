@@ -23,15 +23,14 @@ const getUserId = async () => {
 
 
 
-export const uploadMemory = async (file, title, location, tags) => {
+export const uploadMemory = async (file, title, description, location, tags, date) => {
     try {
         const userId = await getUserId();
-        console.log('userId:', userId);
-        console.log('Preparing FormData...');
         
         const formData = new FormData();
         formData.append('user_id', userId);
         formData.append('title', title);
+        formData.append('description', description); 
         formData.append('location', location ? JSON.stringify(location) : '');
         formData.append('file', {
             uri: file.uri,
@@ -39,14 +38,9 @@ export const uploadMemory = async (file, title, location, tags) => {
             name: file.fileName || 'memory.jpg'
         });
         formData.append('tags', tags);
+        formData.append('date', date || new Date().toISOString());
 
-        console.log('Sending request to:', `${API_BASE}/upload_memory`);
-        console.log('File data:', {
-            uri: file.uri,
-            type: file.type,
-            name: file.fileName
-        });
-        console.log('data being sent:', { user_id: userId, title, location, tags });
+        
         const response = await fetch(`${API_BASE}/upload_memory`, {
             method: 'POST',
             body: formData,
@@ -55,7 +49,6 @@ export const uploadMemory = async (file, title, location, tags) => {
             },
         });
         
-        console.log('Response received, status:', response.status);
         
         if (!response.ok) {
             const errorText = await response.text();
@@ -86,7 +79,6 @@ export const getMemories = async () => {
         const data = await response.json();
         console.log('Memories response:', data);
         
-        // Convertir les chemins d'images relatifs en URLs complètes
         const memoriesArray = Array.isArray(data) ? data : (data?.memories || []);
         const memoriesWithFullUrls = memoriesArray.map(memory => ({
             ...memory,
@@ -99,31 +91,6 @@ export const getMemories = async () => {
         console.error('Error in getMemories:', error);
         return [];
     }
-};
-
-export const getCartItems = async () => {
-    const cartId = await getCartId();
-    console.log('Fetching cart items for cart ID:', cartId);
-    console.log('API URL:', `${API_BASE}/cart?user_id=${cartId}`);
-    const response = await fetch(`${API_BASE}/cart?user_id=${cartId}`);
-    const data = await response.json();
-    return data;
-};
-
-
-
-export const delItemFromCart = async (itemId) => {
-    const cartId = await getCartId();
-    const response = await fetch (`${API_BASE}/cart?id=${itemId}&user_id=${cartId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-    console.log('Response status for deleting item from cart:', response.status);
-    parseInt(response.status) >= 400 && console.warn('Error deleting item from cart:', response.status);
-
-    return response.json();
 };
 
 
