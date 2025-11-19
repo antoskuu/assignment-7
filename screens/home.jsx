@@ -74,22 +74,18 @@ const HomeScreen = ({navigation}) => {
     const finalMemories = useMemo(() => {
         let result = [...memories];
 
-        // A. FILTRAGE
         if (filterActive.length > 0) {
-            // On récupère juste les noms des tags sélectionnés (ex: "Vacances", "Travail")
             const activeTagNames = filterActive.map(item => item.tag[0]);
 
             result = result.filter(memory => {
                 if (!memory.tags) return false;
                 
-                // On récupère les noms des tags de la mémoire (en gérant si c'est un tableau ou une string)
                 const memoryTagNames = memory.tags.map(t => Array.isArray(t) ? t[0] : t);
 
                 return activeTagNames.some(tagName => memoryTagNames.includes(tagName));
             });
         }
 
-        // B. TRI
         if (sortMode === 'newest') {
             result.sort((a, b) => new Date(b.date) - new Date(a.date));
         } else if (sortMode === 'oldest') {
@@ -97,8 +93,7 @@ const HomeScreen = ({navigation}) => {
         }
 
         return result;
-    }, [memories, filterActive, sortMode]); // Se recalcule quand ces variables changent
-
+    }, [memories, filterActive, sortMode]); 
 
     return (
 <ScrollView style={styles.ScrollView} contentContainerStyle={styles.scrollContent}>
@@ -119,6 +114,24 @@ const HomeScreen = ({navigation}) => {
 
         
             </View>
+            {(sortMode === 'newest' || sortMode === 'oldest' || filterActive.length > 0) && (
+                <TouchableOpacity
+                onPress={() => {
+                    setSortMode(null);
+                    setFilterActive([]);
+                }}
+                style={{
+                    backgroundColor: colors.card,
+                    marginHorizontal: 20,
+                    marginBottom: 10,
+                    padding: 10,
+                    borderRadius: 8,
+                    alignItems: 'center',
+                }}
+            >
+                <Text style={{ color: colors.text }}>Clear Filters & Sorting ({filterActive.length + (sortMode ? 1 : 0)})</Text>
+            </TouchableOpacity>
+            )}
             {modalOpen && (
             <View style={{
                 alignSelf: 'center',
@@ -155,10 +168,10 @@ const HomeScreen = ({navigation}) => {
                             backgroundColor: t[1],
                             opacity: filterActive.some(st => st.index === index) ? 1 : 0.2,
                             borderRadius: 16,
-                            paddingHorizontal: 12,
-                            paddingVertical: 8,
-                            marginRight: 8,
-                            marginBottom: 8,
+                            paddingHorizontal: 5,
+                            paddingVertical: 5,
+                            marginRight: 3,
+                            marginBottom: 1,
                             borderWidth: 3,
                             borderColor: filterActive.some(st => st.index === index) ? colors.text : colors.border,
                             }}
@@ -169,6 +182,7 @@ const HomeScreen = ({navigation}) => {
                     </View>
             </View>
         )}
+        
                 <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 8 }}>
                 <CardGrid cart_bool={false} items={finalMemories} onItemPress={handleMemoryPress} />
 
