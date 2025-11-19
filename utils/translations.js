@@ -20,6 +20,7 @@ export const translations = {
     // Home
     home: 'Home',
     memories: 'Memories',
+    delete: 'Delete',
     
     // Map
     map: 'Map',
@@ -35,7 +36,7 @@ export const translations = {
     tags: 'Tagger',
     addTag: 'Legg til tagg',
     add: 'Legg til',
-    
+    delete: 'Slett',
     // Create
     create: 'Opprett',
     title: 'Tittel',

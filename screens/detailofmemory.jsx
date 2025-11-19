@@ -6,7 +6,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 import {useEffect} from "react";
+import { LanguageContext } from '../App';
+import { deleteMemory } from "../services/memoriesAPI.js";
+
+
 const MemoryDetailScreen = ({route}) => {
+    const { t } = React.useContext(LanguageContext);
 const { memory: memoryFromRoute } = route.params;
     const memory = {
         ...memoryFromRoute,
@@ -54,7 +59,7 @@ const { memory: memoryFromRoute } = route.params;
 }}>{new Date(memory.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</Text>
         <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
                     {memory.tags.map((t) => (
-                      <TouchableOpacity
+                      <View
                         key={t[0]}
                         style={{
                           backgroundColor: t[1],
@@ -68,7 +73,7 @@ const { memory: memoryFromRoute } = route.params;
                         }}
                       >
                         <Text style={{color: colors.text}}>{t[0]}</Text>
-                      </TouchableOpacity>
+                      </View>
                     ))}
     </View>
 
@@ -100,7 +105,19 @@ const { memory: memoryFromRoute } = route.params;
                     
                 </Mapbox.MapView>
     </View>
+    <TouchableOpacity
+            onPress={() => { deleteMemory(memory.id); navigation.goBack(); }}
+            style={{
+                padding: 10,
+                margin: 10,
+                alignSelf: 'center',
+                backgroundColor: "#ff0000",
+                borderRadius: 8,
+            }}
+        >
+            <Text style={{ fontSize: 18, color: '#fff' }}> { t('delete') } </Text>
 
+        </TouchableOpacity>
 </View>
 </ScrollView>
     )

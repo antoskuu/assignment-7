@@ -93,6 +93,28 @@ export const getMemories = async () => {
     }
 };
 
+export const deleteMemory = async (memoryId) => {
+    try {
+        const userId = await getUserId();
+        const response = await fetch(`${API_BASE}/memories/${userId}/${memoryId}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            console.error('Error deleting memory:', response.status);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Memory deleted:', data);
+        return data;
+    } catch (error) {
+        console.error('Error in deleteMemory:', error);
+        throw error;
+    }
+};
+
+
 
 export const getTags = async () => {
     const userId = await getUserId();

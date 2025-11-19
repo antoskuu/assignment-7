@@ -18,7 +18,7 @@ const MapScreen = () => {
     useFocusEffect(
         useCallback(() => {
             const load = async () => {
-                fetchMarkers();
+                await fetchMarkers();
             };
             load();
         }, [])
@@ -59,7 +59,7 @@ const MapScreen = () => {
                             id={`marker-${marker.id}`}
                             coordinate={marker.location}
                             onSelected={() => {
-                                console.log('Marker selected:', marker.title);
+                                console.log('Marker selected:', marker);
                                 setSelectedMarker(marker.id);
                             }}
                         >
@@ -133,6 +133,22 @@ const MapScreen = () => {
                             }}>
                                 {marker.title}
                             </Text>
+                            <Text style={{
+                                fontSize: 14,
+                                color: colors.text || '#000',
+                                marginBottom: 8,
+                                paddingRight: 30,
+                            }}>
+                                {marker.description}
+                            </Text>
+                            <Text style={{
+                                fontSize: 12,
+                                color: colors.text || '#000',
+                                marginBottom: 12,
+                                paddingRight: 30,
+                            }}>
+                                {new Date(marker.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                            </Text>                           
 
                             {marker.tags && marker.tags.length > 0 && (
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8 }}>

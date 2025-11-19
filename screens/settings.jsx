@@ -87,17 +87,20 @@ const onSelectColor = ({ hex }) => {
                 value={newTag}
                 onChangeText={setNewTag}
                 placeholder={t('addTag')}
-                placeholderTextColor={colors.text + '88'}
+                placeholderTextColor="#000"
                 style={{
                   flex: 1,
                   backgroundColor: hex,
                   borderRadius: 8,
                   paddingHorizontal: 12,
                   paddingVertical: 8,
-                  color: colors.text,
+                  color: 'white', // Texte blanc
                   borderWidth: 1,
                   borderColor: colors.border,
                   marginRight: 8,
+                  textShadowColor: 'black', // Contour noir opaque
+                  textShadowOffset: { width: 1, height: 1 },
+                  textShadowRadius: 3
                 }}
               />
               <TouchableOpacity onPress={addTag} style={{backgroundColor: colors.primary, padding: 12, justifyContent: 'center', borderRadius: 8, height: 40}}>
@@ -131,7 +134,7 @@ const onSelectColor = ({ hex }) => {
         </View>
 <View>
         
-        <ColorPicker style={{ width: '70%' }} onComplete={onSelectColor} initialColor={hex}>
+        <ColorPicker style={{ width: '70%' }} onComplete={onSelectColor} >
         <Panel5 />
         
 
