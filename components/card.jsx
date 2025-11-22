@@ -19,16 +19,19 @@ const Card = ({ cart_bool, title, image, id, cart_function, cart_text, location,
     
     return(
     <View style={{width : 300, aspectRatio: 1, backgroundColor: colors.card, borderRadius: 10, alignItems: "center", justifyContent:"center"}}   >
+        <View style={{borderColor:'#fff', backgroundColor: '#373737ff', borderWidth:1, borderRadius:20, alignSelf:'flex-end', marginTop: 5, marginRight: 12, marginBottom:12
+
+}}>
         <Text style={{
                 fontSize: 12,
                 color: colors.text,
-                margin: 12,
+                margin: 5,
 
-                alignSelf:'flex-end'
                             }}>
             {new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
-        </Text>  
-        <Image source={imageSource} style={{ width:"70%", height:'70%', borderRadius: 5 }}/>
+        </Text>
+        </View>
+        <Image source={imageSource} style={{ width:"60%", height:'60%', borderRadius: 5 }}/>
         <Text style={{fontSize:15, color: colors.text}}>{title}</Text>
         <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 4, justifyContent: 'center', marginTop: 5}}>
         {tags.map((t) => (

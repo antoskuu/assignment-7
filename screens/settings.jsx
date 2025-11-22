@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {Modal, View, Text, TextInput, TouchableOpacity, ScrollView, Picker, Touchable, Switch, StyleSheet} from 'react-native';
+import {Modal, View, Text, TextInput, TouchableOpacity, ScrollView, Picker, Touchable, Switch, StyleSheet, Image} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { ThemeContext, LanguageContext } from '../App';
 import { getTags } from '../services/memoriesAPI';
@@ -67,17 +67,29 @@ const onSelectColor = ({ hex }) => {
           thumbColor={themeName === 'dark' ? '#f4f3f4' : '#f4f3f4'}
         />
       </View>
-      <View style={{marginBottom: 12}}>
-        <Text style={{marginBottom: 6, color: colors.text}}>{t('language')}</Text>
+      <View style={{marginBottom: 12, flexDirection: 'row', alignItems: 'center', alignContent: 'center', alignSelf: 'center'}}>
+      
         <TouchableOpacity
           onPress={() => {
-            const newLang = language === 'English' ? 'Norwegian' : 'English';
+            const newLang = 'English'
             setLanguage(newLang);
-          }}
-          style={{backgroundColor: colors.card, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: colors.border}}
-        >
-          <Text style={{color: colors.text}}>{language}</Text>
+          }} style={{width: 100, marginRight: 16, alignItems: 'center', backgroundColor: language=== 'English' ? colors.card : 'transparent', borderRadius: 8, padding: 8, borderColor: colors.border, borderWidth: language=== 'English' ? 2 : 0}}>
+        
+        <Text style={{color: colors.text}}>English</Text>
+
+          <Image source={require('../assets/app/uk_flag.png')} style={{width: 48, height: 36, marginTop: 8}}/>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            const newLang = 'Norwegian'
+            setLanguage(newLang);
+          }} style={{width: 100, marginRight: 16, alignItems: 'center', backgroundColor: language=== 'Norwegian' ? colors.card : 'transparent', borderRadius: 8, padding: 8, borderColor: colors.border, borderWidth: language=== 'Norwegian' ? 2 : 0}}>
+
+        <Text style={{color: colors.text}}>Norwegian</Text>
+
+          <Image source={require('../assets/app/norway_flag.png')} style={{width: 48, height: 36, marginTop: 8}} />
+        </TouchableOpacity>
+        
       </View>
 
           <View style={{marginBottom: 12}}>
