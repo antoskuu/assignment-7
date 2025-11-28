@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {Modal, View, Text, TextInput, TouchableOpacity, ScrollView, Picker, Touchable, Switch, StyleSheet, Image} from 'react-native';
-import { useTheme, useNavigation } from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 import { ThemeContext, LanguageContext } from '../App';
 import { getTags } from '../services/memoriesAPI';
 import { useFocusEffect } from '@react-navigation/native';
@@ -11,9 +11,7 @@ import { runOnJS } from 'react-native-reanimated';
 
 import ColorPicker, { Panel1, Swatches, Preview, OpacitySlider, HueSlider, Panel5 } from 'reanimated-color-picker';
 
-const Settings = () => {
-    const navigation = useNavigation();
-
+const LanguagesTab = ({ navigation }) => {
   const { themeName, setThemeName } = useContext(ThemeContext); 
   const { language, setLanguage, t } = useContext(LanguageContext);
   const { colors } = useTheme();
@@ -58,23 +56,38 @@ const onSelectColor = ({ hex }) => {
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: colors.background}} contentContainerStyle={{padding: 16}}>
-      <Text style={{fontSize: 24, fontWeight: '600', marginBottom: 16, color: colors.text}}>{t('settings')}</Text>
-      
-      <View style={styles.row}>
-      
-        <Text style={[styles.label, { color: colors.text }]}>{t('darkMode')}</Text>
-        <Switch
-          value={themeName === 'dark'}
-          onValueChange={() => setThemeName(themeName === 'light' ? 'dark' : 'light')}
-          trackColor={{ false: '#767577', true: colors.primary }}
-          thumbColor={themeName === 'dark' ? '#f4f3f4' : '#f4f3f4'}
-        />
-      </View>
-      
-      <TouchableOpacity style={{marginVertical: 6, backgroundColor: colors.card, padding: 12, borderRadius: 8}} onPress ={() => {navigation.navigate('Language')}}><Text style={[styles.label, { color: colors.text }]}>{t('language')}</Text></TouchableOpacity>
-             <TouchableOpacity style={{marginVertical: 6, backgroundColor: colors.card, padding: 12, borderRadius: 8}} onPress ={() => {navigation.navigate('Tags')}}><Text style={[styles.label, { color: colors.text }]}>{t('tags')}</Text></TouchableOpacity>
+    <TouchableOpacity onPress ={() => {navigation.goBack()}}>            
+    <Text style={{ fontSize: 24, color: colors.primary }}>←</Text>
+    </TouchableOpacity>
+                  <Text style={{marginBottom: 6, color: colors.text}}>{t('language')}</Text>
 
+      <View style={{marginBottom: 12, flexDirection: 'row', alignItems: 'center', alignContent: 'center', alignSelf: 'center'}}>
       
+        <TouchableOpacity
+          onPress={() => {
+            const newLang = 'English'
+            setLanguage(newLang);
+          }} style={{width: 100, marginRight: 16, alignItems: 'center', backgroundColor: language=== 'English' ? colors.card : 'transparent', borderRadius: 8, padding: 8, borderColor: colors.border, borderWidth: language=== 'English' ? 2 : 0}}>
+        
+        <Text style={{color: colors.text}}>English</Text>
+
+          <Image source={require('../assets/app/uk_flag.png')} style={{width: 48, height: 36, marginTop: 8}}/>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            const newLang = 'Norwegian'
+            setLanguage(newLang);
+          }} style={{width: 100, marginRight: 16, alignItems: 'center', backgroundColor: language=== 'Norwegian' ? colors.card : 'transparent', borderRadius: 8, padding: 8, borderColor: colors.border, borderWidth: language=== 'Norwegian' ? 2 : 0}}>
+
+        <Text style={{color: colors.text}}>Norwegian</Text>
+
+          <Image source={require('../assets/app/norway_flag.png')} style={{width: 48, height: 36, marginTop: 8}} />
+        </TouchableOpacity>
+        
+      </View>
+
+         
+
     </ScrollView>
   );
 };
@@ -100,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default LanguagesTab;

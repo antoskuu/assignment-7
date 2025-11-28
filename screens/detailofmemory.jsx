@@ -26,24 +26,19 @@ const { memory: memoryFromRoute } = route.params;
 
     return (
     <ScrollView>
-    <View style={{backgroundColor: colors.background,flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
-    <TouchableOpacity 
+    <View style={{width: '100%', backgroundColor: colors.card, padding: 10, borderRadius: 10}}>
+    <View style={{width: '100%'}}>
+        <TouchableOpacity 
             onPress={() => navigation.goBack()}
             style={{
-                padding: 10,
-                margin: 10,
-                alignSelf: 'flex-start'
+                padding: 5,
+                margin: 5,
+                alignSelf: 'flex-start',
             }}
         >
-            <Text style={{ fontSize: 24, color: colors.text }}>←</Text>
+            <Text style={{ fontSize: 24, color: colors.primary }}>←</Text>
 
-        </TouchableOpacity>        
-        
-        </View>
-
-    <View style={{width: '100%', backgroundColor: colors.card, padding: 20, borderRadius: 10}}>
-
-    <View style={{width: '100%', marginTop: 10}}>
+        </TouchableOpacity> 
         {memory.image && (
             <Image 
                 source={{uri: memory.image}} 
@@ -51,7 +46,7 @@ const { memory: memoryFromRoute } = route.params;
             />
         )}
     </View>
-    <Text style={{...styles.text, fontSize: 24, color: colors.text, padding: 10, margin:10, textAlign: 'center'
+    <Text style={{...styles.text, fontSize: 24, color: colors.text, padding: 10, margin:10, textAlign: 'center', fontWeight: 'bold'
 }}>{memory.title}</Text>
     <Text style={{...styles.text, fontSize: 16, color: colors.text, paddingHorizontal: 10, marginBottom: 10, textAlign: 'center'
 }}>{memory.description}</Text>

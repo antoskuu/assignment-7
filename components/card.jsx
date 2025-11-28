@@ -1,6 +1,8 @@
+import React from 'react';
 import { StatusBar, StyleSheet, useColorScheme, View, Text, Button, ScrollView, TouchableOpacity, ImageBackground, Image } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-
+import { LanguageContext } from '../App';
+import { translations } from '../utils/translations';
 
 
 function AddToCartButton({cart_bool, cart_text, cart_function, itemId, title}) {
@@ -16,23 +18,25 @@ function AddToCartButton({cart_bool, cart_text, cart_function, itemId, title}) {
 const Card = ({ cart_bool, title, image, id, cart_function, cart_text, location, tags, date }) => {
     const { colors } = useTheme();
     const imageSource = typeof image === 'string' ? { uri: image } : image;
+    const { translate, language } = React.useContext(LanguageContext);
+    
     
     return(
     <View style={{width : 300, aspectRatio: 1, backgroundColor: colors.card, borderRadius: 10, alignItems: "center", justifyContent:"center"}}   >
-        <View style={{borderColor:'#fff', backgroundColor: '#373737ff', borderWidth:1, borderRadius:20, alignSelf:'flex-end', marginTop: 5, marginRight: 12, marginBottom:12
-
-}}>
-        <Text style={{
-                fontSize: 12,
-                color: colors.text,
-                margin: 5,
-
+        
+        <ImageBackground source={imageSource} style={{ width:"100%", height:'100%', borderRadius: 5, alignItems: 'center', borderRadius: 10, justifyContent: 'center', }} imageStyle={{ borderRadius: 10 }}>
+          <View style={{backgroundColor: 'rgba(0, 0, 0, 0.2)', borderRadius: 20, padding: 3}} >
+            <Text style={{
+                fontSize:10,
+            color: 'white', 
                             }}>
-            {new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+            {new Date(date).toLocaleDateString(translations[language].date, { day: 'numeric', month: 'long', year: 'numeric' })}
         </Text>
         </View>
-        <Image source={imageSource} style={{ width:"60%", height:'60%', borderRadius: 5 }}/>
-        <Text style={{fontSize:15, color: colors.text}}>{title}</Text>
+        <Text style={{fontSize:15, color: 'white', fontWeight: 'bold',
+            textShadowColor: 'black',
+            textShadowOffset: { width: -1, height: 1 },
+            textShadowRadius: 1}}>{title}</Text>
         <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 4, justifyContent: 'center', marginTop: 5}}>
         {tags.map((t) => (
                               <View
@@ -54,6 +58,9 @@ const Card = ({ cart_bool, title, image, id, cart_function, cart_text, location,
                             ))}
                             
         </View>
+        </ImageBackground>
+
+        
         <AddToCartButton cart_bool={cart_bool} id={id} title={title} cart_function={cart_function} cart_text={cart_text} />
     </View>
 )

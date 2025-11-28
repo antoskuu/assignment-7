@@ -27,6 +27,7 @@ export const translations = {
     
     // Detail
     detail: 'Detail',
+    date:'en-US'
   },
   Norwegian: {
     // Settings
@@ -55,5 +56,6 @@ export const translations = {
     
     // Detail
     detail: 'Detaljer',
+    date:'nb-NO'
   },
 };

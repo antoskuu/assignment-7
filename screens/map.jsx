@@ -11,7 +11,6 @@ import { getMemories } from "../services/memoriesAPI.js";
 const MapScreen = () => {
     const { colors } = useTheme();
     const navigation = useNavigation();
-
     const [markers, setMarkers] = useState([]);
     const [selectedMarker, setSelectedMarker] = useState(null);
 
@@ -23,6 +22,8 @@ const MapScreen = () => {
             load();
         }, [])
     );
+    
+
     
     const fetchMarkers = async () => {
                 const data = await getMemories();
@@ -63,7 +64,6 @@ const MapScreen = () => {
                                 setSelectedMarker(marker.id);
                             }}
                         >
-                            {/* Pin personnalisé */}
                             <View style={{
                                 alignItems: 'center',
                                 justifyContent: 'center',

@@ -15,7 +15,8 @@ import Create from './screens/create.jsx';
 import Settings from './screens/settings.jsx';
 import { MyLightTheme, MyDarkTheme } from './styles/themes.js';
 import { translations } from './utils/translations.js';
-
+import LanguagesTab from './screens/languages.jsx';
+import TagsEdit from './screens/tags_edit.jsx';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -69,6 +70,8 @@ function SettingsStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }} />
+      <Stack.Screen name="Language" component={LanguagesTab} options={{ headerShown: false }} />
+      <Stack.Screen name="Tags" component={TagsEdit} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
