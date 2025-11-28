@@ -98,6 +98,7 @@ const MapScreen = () => {
             const feature = e.features[0];
             console.log('Marker selected:', feature.properties);
             setSelectedMarker(feature.properties.id);
+            setSelectedGroupedMarker(null);
         }
     };
 

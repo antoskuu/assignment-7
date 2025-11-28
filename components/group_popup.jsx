@@ -11,6 +11,7 @@ export default function GroupPopUpMap({ markers, setSelectedMarker, setSelectedG
 
     const handleClose = () => {
         setSelectedGroupedMarker(null);
+        
     };
 
     const handleMemoryPress = (marker) => {
