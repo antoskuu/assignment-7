@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react";
+import React, { useState, useEffect, useCallback, memo, useRef } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +18,10 @@ const MapScreen = () => {
     const [markers, setMarkers] = useState([]);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [selectedGroupedMarker, setSelectedGroupedMarker] = useState(null);
+    const [globeStyleURL, setGlobeStyleURL] = useState(Mapbox.StyleURL.Street);
+    const [centerCoordinate, setCenterCoordinate] = useState([-122.4324, 37.78825]);
+    const cameraRef = useRef();
+
 
     function overlayedMarkers(markers, minDistance = 50) {
         function haversine(coord1, coord2) {
@@ -138,23 +142,54 @@ const MapScreen = () => {
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
-            
+            <TouchableOpacity onPress ={() => {
+        if (globeStyleURL === Mapbox.StyleURL.Street) {
+            setGlobeStyleURL(Mapbox.StyleURL.Satellite);
+        } else {
+            setGlobeStyleURL(Mapbox.StyleURL.Street);
+        }
+    }} style={{
+        position: 'absolute',
+        top: 40,
+        right: 20,
+        zIndex: 10,
+        backgroundColor: colors.card,
+        padding: 10,
+        borderRadius: 5,
+    }}>
+        <Image source={require('../assets/app/layer.png')} style={{ width: 24, height: 24, tintColor: colors.text }} />
+    </TouchableOpacity>
+<TouchableOpacity onPress={() => cameraRef.current?.moveTo(centerCoordinate, 1000)}
+        
+     style={{
+        position: 'absolute',
+        top: 90,
+        right: 20,
+        zIndex: 10,
+        backgroundColor: colors.card,
+        padding: 10,
+        borderRadius: 5,
+    }}>
+        <Image source={require('../assets/app/precise-positioning.png')} style={{ width: 24, height: 24, tintColor: colors.text }} />
+    </TouchableOpacity>
             <View style={{ flex: 1, position: 'relative' }}>
-                <Mapbox.MapView
-                    style={{ flex: 1 }}
-                    styleURL={Mapbox.StyleURL.Street}
-                    projection="globe"
-                    onPress={() => {
-                        setSelectedMarker(null);
-                        setSelectedGroupedMarker(null);
-                    }}
-                >
-                    <Mapbox.Camera
-                        zoomLevel={6}
-                        centerCoordinate={[-122.4324, 37.78825]}
-                        animationMode="flyTo"
-                    />
+    <Mapbox.MapView
+        style={{ flex: 1 }}
+        styleURL={globeStyleURL}
+        projection="globe"
+        onPress={() => {
+            setSelectedMarker(null);
+            setSelectedGroupedMarker(null);
+        }}
+    >
+        <Mapbox.Camera
+          ref={cameraRef}
 
+            zoomLevel={6}
+            centerCoordinate={centerCoordinate}
+            animationMode="flyTo"
+        />
+    
  
     <Mapbox.Images images={{ markerIcon: marker }} />
 
@@ -215,7 +250,7 @@ const MapScreen = () => {
                     const group = allGroups.find(g => g.map(m => m.id).join('-') === selectedGroupedMarker);
                     if (!group) return null;
                     return (
-                        <GroupPopUpMap markers={group} setSelectedMarker={setSelectedMarker} setSelectedGroupedMarker={setSelectedGroupedMarker} />
+                        <GroupPopUpMap markers={group} selectedMarker={selectedMarker} setSelectedMarker={setSelectedMarker} setSelectedGroupedMarker={setSelectedGroupedMarker} />
                     );
                 })()}
             </View>

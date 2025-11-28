@@ -7,6 +7,7 @@ export default function PopUpMap({ marker, setSelectedMarker }) {
     const { colors } = useTheme();
     return (
         <View style={{
+            zIndex: 100,
             position: 'absolute',
             bottom: 20,
             left: 20,

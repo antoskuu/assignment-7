@@ -5,8 +5,9 @@ import { useTheme } from '@react-navigation/native';
 import CardGrid from './cardGrid.jsx';
 import { Image } from 'react-native';
 import { ScrollView } from 'react-native';
+import { opacity } from 'react-native-reanimated/lib/typescript/Colors.js';
 
-export default function GroupPopUpMap({ markers, setSelectedMarker, setSelectedGroupedMarker }) {
+export default function GroupPopUpMap({ markers, selectedMarker, setSelectedMarker, setSelectedGroupedMarker }) {
     const { colors } = useTheme();
 
     const handleClose = () => {
@@ -20,8 +21,9 @@ export default function GroupPopUpMap({ markers, setSelectedMarker, setSelectedG
 
     return (
         <View style={{
+        ...(selectedMarker ? { opacity: 0.3 } : {}),
             position: 'absolute',
-            height: '30%',
+            height: '40%',
             width: '90%',
             bottom: 20,
             left: 20,
@@ -66,7 +68,6 @@ export default function GroupPopUpMap({ markers, setSelectedMarker, setSelectedG
         <TouchableOpacity
           key={item.id || item.title}
           onPress={() => {setSelectedMarker(item.id)
-            setSelectedGroupedMarker(null);
           }}
           style={{
 
