@@ -20,6 +20,7 @@ const LanguagesTab = ({ navigation }) => {
   const [newTag, setNewTag] = useState('');
 
 
+
   const addTag = async () => {
     const t = [newTag, hex];
     console.log('Adding tag:', t);
@@ -59,7 +60,7 @@ const onSelectColor = ({ hex }) => {
     <TouchableOpacity onPress ={() => {navigation.goBack()}}>            
     <Text style={{ fontSize: 24, color: colors.primary }}>←</Text>
     </TouchableOpacity>
-                  <Text style={{marginBottom: 6, color: colors.text}}>{t('language')}</Text>
+                  <Text style={{marginBottom: 6, color: colors.text, fontSize: 16}}>{t('language')}</Text>
 
       <View style={{marginBottom: 12, flexDirection: 'row', alignItems: 'center', alignContent: 'center', alignSelf: 'center'}}>
       

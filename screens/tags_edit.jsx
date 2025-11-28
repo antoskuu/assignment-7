@@ -57,14 +57,13 @@ const onSelectColor = ({ hex }) => {
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: colors.background}} contentContainerStyle={{padding: 16}}>
-      <Text style={{fontSize: 24, fontWeight: '600', marginBottom: 16, color: colors.text}}>{t('settings')}</Text>
       
      <TouchableOpacity onPress ={() => {navigation.goBack()}}>            
          <Text style={{ fontSize: 24, color: colors.primary }}>←</Text>
          </TouchableOpacity>
       
           <View style={{marginBottom: 12}}>
-            <Text style={{marginBottom: 6, color: colors.text}}>{t('tags')}</Text>
+            <Text style={{marginBottom: 6, color: colors.text, fontSize: 16}}>{t('tags')}</Text>
             <View style={{flexDirection: 'row', marginBottom: 8}}>
               <TextInput
                 value={newTag}
@@ -93,7 +92,7 @@ const onSelectColor = ({ hex }) => {
 
           <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
             {tags.map((t, index) => (
-              <TouchableOpacity
+              <View
                 key={`${t[0]}-${index}`}
                 style={{
                   backgroundColor: t[1],
@@ -111,7 +110,7 @@ const onSelectColor = ({ hex }) => {
                 <TouchableOpacity onPress={() => removeTag(t)} style={{marginLeft: 8}}>
                   <Text style={{color: '#f00', fontWeight: 'bold'}}>×</Text>
               </TouchableOpacity>
-              </TouchableOpacity>
+              </View>
             ))}
           </View>
         </View>
