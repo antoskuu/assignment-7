@@ -62,6 +62,7 @@ function MapStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Map" component={MapScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="MemoryDetail" component={MemoryDetailScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

@@ -2,11 +2,20 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function PopUpMap({ marker, setSelectedMarker }) {
     const { colors } = useTheme();
+    const navigation = useNavigation();
+      const handleMemoryPress = (memory) => {
+        navigation.navigate('MemoryDetail', {
+            memory: memory,
+        });
+    };
+        
     return (
-        <View style={{
+        <View>
+        <TouchableOpacity style={{
             zIndex: 100,
             position: 'absolute',
             bottom: 20,
@@ -20,10 +29,12 @@ export default function PopUpMap({ marker, setSelectedMarker }) {
             shadowOpacity: 0.3,
             shadowRadius: 8,
             elevation: 10,
-        }}>
+        }}
+        onPress={() => handleMemoryPress(marker)}
+        >
             <TouchableOpacity
                 onPress={() => setSelectedMarker(null)}
-                style={{
+                style={{ 
                     position: 'absolute',
                     top: 12,
                     right: 12,
@@ -100,6 +111,7 @@ export default function PopUpMap({ marker, setSelectedMarker }) {
                     )}
                 </View>
             </View>
+        </TouchableOpacity>
         </View>
     );
 }

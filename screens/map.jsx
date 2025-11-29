@@ -3,9 +3,6 @@ import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
-import styles from '../styles/styles.jsx';
-import CardGrid from '../components/cardGrid.jsx';
-import { getCategories } from '../services/productsApi.js';
 import { useFocusEffect } from "@react-navigation/native";
 import { getMemories } from "../services/memoriesAPI.js";
 import marker from '../assets/app/marker.png';
@@ -13,6 +10,7 @@ import PopUpMap from '../components/pop_up_map.jsx';
 import GroupPopUpMap from '../components/group_popup.jsx';
 import Geolocation from '@react-native-community/geolocation';
 import Animated, { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
+
 const MapScreen = () => {
     const { colors } = useTheme();
     const navigation = useNavigation();
@@ -259,7 +257,8 @@ const MapScreen = () => {
                             marginBottom: 6,
                             borderWidth: globeStyleURL === Mapbox.StyleURL.Street ? 3 : 0,
                             borderRadius: 8,
-                            borderColor: globeStyleURL === Mapbox.StyleURL.Street ? colors.text : null
+                            borderColor: globeStyleURL === Mapbox.StyleURL.Street ? colors.text : null,
+                            opacity: globeStyleURL === Mapbox.StyleURL.Street ? 1 : 0.25,
 
                         }}
                     >
@@ -273,6 +272,7 @@ const MapScreen = () => {
                         }}
                         style={{
                             marginBottom: 6,
+                            opacity: globeStyleURL === Mapbox.StyleURL.Dark ? 1 : 0.25,
                             borderWidth: globeStyleURL === Mapbox.StyleURL.Dark ? 3 : 0,
                             borderRadius: 8,
                             borderColor: globeStyleURL === Mapbox.StyleURL.Dark ? colors.text : null
@@ -289,6 +289,8 @@ const MapScreen = () => {
                         }}
                         style={{
                             borderWidth: globeStyleURL === Mapbox.StyleURL.Satellite ? 3 : 0,
+                                                        opacity: globeStyleURL === Mapbox.StyleURL.Satellite ? 1 : 0.25,
+                            
                             borderRadius: 8,
                             borderColor: globeStyleURL === Mapbox.StyleURL.Satellite ? colors.text : null
                         }}
@@ -347,8 +349,8 @@ const MapScreen = () => {
     <Mapbox.CircleLayer
       id="grouped-markers-circle"
       style={{
-        circleRadius: 24,
-        circleColor: "#FF9800", // Different color for groups
+        circleRadius: 20,
+        circleColor: "red", // Different color for groups
         circleStrokeWidth: 2,
         circleStrokeColor: "#FFF",
       }}
