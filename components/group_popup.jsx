@@ -21,7 +21,7 @@ export default function GroupPopUpMap({ markers, selectedMarker, setSelectedMark
 
     return (
         <View style={{
-        ...(selectedMarker ? { opacity: 0.3 } : {}),
+        ...(selectedMarker ? { opacity: 0, pointerEvents: selectedMarker ? 'none' : 'auto' } : {}),
             position: 'absolute',
             height: '40%',
             width: '90%',
