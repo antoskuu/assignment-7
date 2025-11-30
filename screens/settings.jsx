@@ -72,7 +72,7 @@ const onSelectColor = ({ hex }) => {
       </View>
       
       <TouchableOpacity style={{marginVertical: 6, backgroundColor: colors.card, padding: 12, borderRadius: 8}} onPress ={() => {navigation.navigate('Language')}}><Text style={[styles.label, { color: colors.text }]}>{t('language')}</Text></TouchableOpacity>
-             <TouchableOpacity style={{marginVertical: 6, backgroundColor: colors.card, padding: 12, borderRadius: 8}} onPress ={() => {navigation.navigate('Tags')}}><Text style={[styles.label, { color: colors.text }]}>{t('tags')}</Text></TouchableOpacity>
+      <TouchableOpacity style={{marginVertical: 6, backgroundColor: colors.card, padding: 12, borderRadius: 8}} onPress ={() => {navigation.navigate('Tags')}}><Text style={[styles.label, { color: colors.text }]}>{t('tags')}</Text></TouchableOpacity>
 
       
     </ScrollView>

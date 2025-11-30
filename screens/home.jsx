@@ -186,9 +186,9 @@ const HomeScreen = ({navigation}) => {
                 <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 8 }}>
                 <CardGrid cart_bool={false} items={finalMemories} onItemPress={handleMemoryPress} />
 
-              </View>
             </View>
-      </ScrollView>
+            </View>
+    </ScrollView>
 
     )
 

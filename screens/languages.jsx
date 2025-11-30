@@ -87,7 +87,7 @@ const onSelectColor = ({ hex }) => {
         
       </View>
 
-         
+
 
     </ScrollView>
   );

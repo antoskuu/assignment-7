@@ -58,9 +58,9 @@ const onSelectColor = ({ hex }) => {
   return (
     <ScrollView style={{flex: 1, backgroundColor: colors.background}} contentContainerStyle={{padding: 16}}>
       
-     <TouchableOpacity onPress ={() => {navigation.goBack()}}>            
-         <Text style={{ fontSize: 24, color: colors.primary }}>←</Text>
-         </TouchableOpacity>
+    <TouchableOpacity onPress ={() => {navigation.goBack()}}>            
+        <Text style={{ fontSize: 24, color: colors.primary }}>←</Text>
+        </TouchableOpacity>
       
           <View style={{marginBottom: 12}}>
             <Text style={{marginBottom: 6, color: colors.text, fontSize: 16}}>{t('tags')}</Text>

@@ -21,7 +21,7 @@ const MapScreen = () => {
     const cameraRef = useRef();
     const [location, setLocation] = useState({coords: [-122.4324, 37.78825]});
     const [layerExpanded, setLayerExpanded] = useState(false);
-    const layerAnim = useSharedValue(0); // 0 = fermé, 1 = ouvert
+    const layerAnim = useSharedValue(0); 
 
 
     const animatedLayerStyle = useAnimatedStyle(() => {
@@ -131,7 +131,6 @@ const MapScreen = () => {
     const markersGroupedFeatureCollection = {
         type: 'FeatureCollection',
         features: overlayedMarkers(markers, 50).groupedMarkers.map(group => {
-            // Calculer la position moyenne du groupe
             const avgLon = group.reduce((sum, m) => sum + m.location[0], 0) / group.length;
             const avgLat = group.reduce((sum, m) => sum + m.location[1], 0) / group.length;
             return {
@@ -143,7 +142,7 @@ const MapScreen = () => {
                 },
                 properties: {
                     id: group.map(m => m.id).join('-'),
-                    title: String(group.length), // Affiche le nombre de markers dans le groupe
+                    title: String(group.length), 
                 },
             };
         }),
@@ -204,7 +203,7 @@ const MapScreen = () => {
             
 <TouchableOpacity onPress={() => cameraRef.current?.moveTo([location.longitude, location.latitude], 1000)}
         
-     style={{
+    style={{
         position: 'absolute',
         top: 40,
         right: 20,
@@ -279,7 +278,7 @@ const MapScreen = () => {
 
                         }}
                     >
- <Image source={require('../assets/app/dark.png')}
+<Image source={require('../assets/app/dark.png')}
                             style={{ width: 64, height: 64, borderRadius: 5}}
                         />                    </TouchableOpacity>
                     <TouchableOpacity
@@ -323,7 +322,6 @@ const MapScreen = () => {
             animationMode="flyTo"
         />
     
- 
     <Mapbox.Images images={{ markerIcon: marker }} />
 
     <Mapbox.ShapeSource
@@ -341,32 +339,32 @@ const MapScreen = () => {
         />
     </Mapbox.ShapeSource>
 
-  <Mapbox.ShapeSource
+<Mapbox.ShapeSource
     id="grouped-markers-source"
     shape={markersGroupedFeatureCollection}
     onPress={onGroupedMarkerPress}
-  >
+>
     <Mapbox.CircleLayer
-      id="grouped-markers-circle"
-      style={{
+    id="grouped-markers-circle"
+    style={{
         circleRadius: 20,
         circleColor: "red", // Different color for groups
         circleStrokeWidth: 2,
         circleStrokeColor: "#FFF",
-      }}
+}}
     />
     <Mapbox.SymbolLayer
-      id="grouped-markers-text"
-      style={{
+    id="grouped-markers-text"
+    style={{
         textField: ["get", "title"],
         textSize: 18,
         textColor: "#FFF",
         textFont: ["Open Sans Bold", "Arial Unicode MS Bold"],
         textAllowOverlap: true,
         textIgnorePlacement: true,
-      }}
+}}
     />
-  </Mapbox.ShapeSource>
+</Mapbox.ShapeSource>
                 </Mapbox.MapView>
 
                 {selectedMarker && (() => {
@@ -378,7 +376,6 @@ const MapScreen = () => {
                     )
                 })()}
                 {selectedGroupedMarker && (() => {
-                    // Find the correct group of markers for the selectedGroupedMarker
                     const allGroups = overlayedMarkers(markers, 50).groupedMarkers;
                     const group = allGroups.find(g => g.map(m => m.id).join('-') === selectedGroupedMarker);
                     if (!group) return null;

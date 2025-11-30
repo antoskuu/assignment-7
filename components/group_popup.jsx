@@ -15,9 +15,6 @@ export default function GroupPopUpMap({ markers, selectedMarker, setSelectedMark
         
     };
 
-    const handleMemoryPress = (marker) => {
-        // You can add logic to open a detail view or select a marker
-    };
 
     return (
         <View style={{

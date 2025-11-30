@@ -8,10 +8,10 @@ import Mapbox from '@rnmapbox/maps';
 import {useEffect} from "react";
 import { LanguageContext } from '../App';
 import { deleteMemory } from "../services/memoriesAPI.js";
-
+import { translations } from '../utils/translations';
 
 const MemoryDetailScreen = ({route}) => {
-    const { t } = React.useContext(LanguageContext);
+const { t, language } = React.useContext(LanguageContext);
 const { memory: memoryFromRoute } = route.params;
     const memory = {
         ...memoryFromRoute,
@@ -46,29 +46,33 @@ const { memory: memoryFromRoute } = route.params;
             />
         )}
     </View>
-    <Text style={{...styles.text, fontSize: 24, color: colors.text, padding: 10, margin:10, textAlign: 'center', fontWeight: 'bold'
+<View style={{ width: '100%', alignItems: 'center' }}>
+<Text style={{ ...styles.text, fontSize: 12, color: colors.text, paddingHorizontal: 10, marginTop: 10, textAlign: 'center' }}>
+    {new Date(memory.date).toLocaleDateString(translations[language].date, { day: 'numeric', month: 'long', year: 'numeric' })}
+</Text>
+</View>
+    <Text style={{...styles.text, fontSize: 24, color: colors.text, padding: 10,  textAlign: 'center', fontWeight: 'bold'
 }}>{memory.title}</Text>
     <Text style={{...styles.text, fontSize: 16, color: colors.text, paddingHorizontal: 10, marginBottom: 10, textAlign: 'center'
 }}>{memory.description}</Text>
-<Text style={{...styles.text, fontSize: 16, color: colors.text, paddingHorizontal: 10, marginBottom: 10, textAlign: 'center'
-}}>{new Date(memory.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })}</Text>
+
         <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
                     {memory.tags.map((t) => (
-                      <View
-                        key={t[0]}
-                        style={{
-                          backgroundColor: t[1],
-                          borderRadius: 16,
-                          paddingHorizontal: 12,
-                          paddingVertical: 8,
-                          marginRight: 8,
-                          marginBottom: 8,
-                          borderWidth: 1,
-                          borderColor: '#fff',
-                        }}
-                      >
+                    <View
+                    key={t[0]}
+                    style={{
+                        backgroundColor: t[1],
+                        borderRadius: 16,
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        marginRight: 8,
+                        marginBottom: 8,
+                        borderWidth: 1,
+                        borderColor: '#fff',
+                    }}
+                    >
                         <Text style={{color: colors.text}}>{t[0]}</Text>
-                      </View>
+                    </View>
                     ))}
     </View>
 

@@ -62,14 +62,11 @@ const Create = () => {
 
     const toggleTag = (tag, tagIndex) => {
         setSelectedTags(prevTags => {
-            // On cherche si ce tag spécifique (par index) est déjà sélectionné
             const existingIndex = prevTags.findIndex(t => t.index === tagIndex);
             
             if (existingIndex !== -1) {
-                // Si trouvé, on le retire
                 return prevTags.filter((_, i) => i !== existingIndex);
             }
-            // Sinon, on l'ajoute avec son index
             return [...prevTags, { tag, index: tagIndex }];
         });
         };
