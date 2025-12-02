@@ -4,31 +4,35 @@
 ## Step 1: Start the Fast API REST API
 
 ```sh
-# Clone the rest api repo
-git clone https://github.com/antoskuu/assignment-6-rest-api.git
+# Download the zip file
 
-
+# In the backend file:
 # Create Environment
+cd Backend
 python -m venv venv
 
 # Enable it
+cd Backend
 source venv/bin/activate
 
 # Install dependencies
+cd Backend
 pip install "fastapi[standard]"
 
 # Start server
+cd Backend
 fastapi dev restapi.py
 ```
 
 
-
+# In the frontend file:
 ## Step 2: Start Metro
-
+Plug your phone, or emulator.
 First, you will need to run **Metro**, the JavaScript build tool for React Native.
 
 ```sh
 # Using npm
+cd Frontend 
 npm start
 ```
 
@@ -38,5 +42,7 @@ With Metro running, open a new terminal window/pane from the root of your React 
 
 ```sh
 # Using npm
+cd Frontend
 npm run android
+# It might take a long time on the first launch, which is because of the MapBox library and the reanimated library
 ```
