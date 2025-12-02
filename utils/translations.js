@@ -21,6 +21,7 @@ export const translations = {
     home: 'Home',
     memories: 'Memories',
     delete: 'Delete',
+    search: 'Search by tag, title, description...',
     
     // Map
     map: 'Map',
@@ -50,6 +51,7 @@ export const translations = {
     // Home
     home: 'Hjem',
     memories: 'Minner',
+    search: 'Søk etter tagg, tittel, beskrivelse...',
     
     // Map
     map: 'Kart',

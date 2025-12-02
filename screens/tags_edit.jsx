@@ -76,11 +76,11 @@ const onSelectColor = ({ hex }) => {
                   borderRadius: 8,
                   paddingHorizontal: 12,
                   paddingVertical: 8,
-                  color: 'white', // Texte blanc
+                  color: 'white',
                   borderWidth: 1,
                   borderColor: colors.border,
                   marginRight: 8,
-                  textShadowColor: 'black', // Contour noir opaque
+                  textShadowColor: 'black',
                   textShadowOffset: { width: 1, height: 1 },
                   textShadowRadius: 3
                 }}

@@ -12,13 +12,15 @@ import { ActivityIndicator } from "react-native";
 import { getTags } from "../services/memoriesAPI.js";
 import Geolocation from '@react-native-community/geolocation';
 import { LanguageContext } from '../App';
-
+import { useNavigation } from "@react-navigation/native";
 
 
 const Create = () => {
+    const navigation = useNavigation();
     const { colors } = useTheme();
     const { t } = React.useContext(LanguageContext);
     const [formData, setFormData] = useState({});
+    const [titleError, setTitleError] = useState('');
     const [loading, setLoading] = useState(false);
     const [location, setLocation] = useState(null);
     const [tags, setTags] = useState([]);
@@ -101,6 +103,11 @@ const Create = () => {
     };
 
 const sendMemory = async () => {
+    if (!formData.title || formData.title.trim() === '') {
+        setTitleError(t('titleRequired') || 'Title is required');
+        return;
+    }
+    setTitleError('');
     setLoading(true);
     try {
         const tagsToSend = selectedTags.map(st => st.tag);
@@ -117,7 +124,7 @@ const sendMemory = async () => {
             tags: []
         });
         setSelectedTags([]);
-
+        navigation.navigate('HomeTab');
     }
 };
         
@@ -125,10 +132,8 @@ const sendMemory = async () => {
     return (
         <ScrollView>
             <View style={{backgroundColor: colors.background}}>
-                
                 <Text style={{...styles.title, color: colors.text}}>{t('create')}</Text>
-                <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 8 }}>
-                </View>
+                <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 8 }}></View>
             </View>
             <TextInput
                 placeholder={t('title')}
@@ -141,10 +146,18 @@ const sendMemory = async () => {
                     marginLeft: 30,
                     marginRight: 30,
                     color: colors.text,
+                    borderWidth: titleError ? 2 : 0,
+                    borderColor: titleError ? 'red' : undefined,
                 }}
-    onChangeText={(text) => setFormData({...formData, title: text, location: location, tags: selectedTags})}
+                onChangeText={(text) => {
+                    setFormData({...formData, title: text, location: location, tags: selectedTags});
+                    if (text && text.trim() !== '') setTitleError('');
+                }}
             />
-             <TextInput
+            {titleError ? (
+                <Text style={{color: 'red', marginLeft: 30, marginTop: 4}}>{titleError}</Text>
+            ) : null}
+            <TextInput
                 placeholder={t('description')}
                 placeholderTextColor="#888"
                 value={formData.description || ''}
@@ -162,7 +175,7 @@ const sendMemory = async () => {
                     textAlignVertical: 'top',
                     color: colors.text,
                 }}
-    onChangeText={(text) => setFormData({...formData, description: text, location: location, tags: selectedTags})}
+                onChangeText={(text) => setFormData({...formData, description: text, location: location, tags: selectedTags})}
             />
                     <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginLeft: 20}}>
                         {tags.map((t, index) => (

@@ -53,7 +53,6 @@ function HomeStack() {
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="MemoryDetail" component={MemoryDetailScreen} options={{ headerShown: false }} />
-
     </Stack.Navigator>
   );
 }
@@ -81,36 +80,30 @@ export default function App() {
   const [themeName, setThemeName] = useState<AppThemeName>('light');
   const [language, setLanguage] = useState<string>('English');
 
-  // Charger le thème sauvegardé
   useEffect(() => {
     (async () => {
       try {
         const saved = await AsyncStorage.getItem(THEME_KEY);
         if (saved === 'light' || saved === 'dark') setThemeName(saved);
       } catch {
-        // ignore
       }
     })();
   }, []);
 
-  // Charger la langue sauvegardée
   useEffect(() => {
     (async () => {
       try {
         const savedLang = await AsyncStorage.getItem(LANGUAGE_KEY);
         if (savedLang) setLanguage(savedLang);
       } catch {
-        // ignore
       }
     })();
   }, []);
 
-  // Sauvegarder à chaque changement
   useEffect(() => {
     AsyncStorage.setItem(THEME_KEY, themeName).catch(() => {});
   }, [themeName]);
 
-  // Sauvegarder la langue à chaque changement
   useEffect(() => {
     AsyncStorage.setItem(LANGUAGE_KEY, language).catch(() => {});
   }, [language]);

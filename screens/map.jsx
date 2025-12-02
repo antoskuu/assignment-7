@@ -348,7 +348,7 @@ const MapScreen = () => {
     id="grouped-markers-circle"
     style={{
         circleRadius: 20,
-        circleColor: "red", // Different color for groups
+        circleColor: "red", 
         circleStrokeWidth: 2,
         circleStrokeColor: "#FFF",
 }}

@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useMemo} from "react";
-import { Modal, View, Text, ScrollView, TouchableOpacity, ImageBackground, Image, h1 } from 'react-native';
+import { Modal, View, Text, ScrollView, TouchableOpacity, ImageBackground, Image, h1, TextInput} from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import styles from '../styles/styles.jsx';
@@ -9,7 +9,7 @@ import { useTheme } from '@react-navigation/native';
 import { getMemories} from "../services/memoriesAPI.js";
 import CardGrid from '../components/cardGrid.jsx'
 import { getTags } from "../services/memoriesAPI.js";
-
+import { LanguageContext } from '../App';
 
 const HomeScreen = ({navigation}) => {
     const { colors } = useTheme();
@@ -18,9 +18,11 @@ const HomeScreen = ({navigation}) => {
     const [filteredMemories, setFilteredMemories] = useState([]);
     const [filterActive, setFilterActive] = useState([]);
     const [tags, setTags] = useState([]);
-    
+    const [searchText, setSearchText] = useState('');
     const [sortMode, setSortMode] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+        const { t } = React.useContext(LanguageContext);
+    
 
             
             
@@ -73,123 +75,138 @@ const HomeScreen = ({navigation}) => {
 
     const finalMemories = useMemo(() => {
         let result = [...memories];
-
+        if (searchText.trim() !== '') {
+            const lowerSearch = searchText.toLowerCase();
+            result = result.filter(memory => {
+                const title = (memory.title || '').toLowerCase();
+                const description = (memory.description || '').toLowerCase();
+                const tagsArr = (memory.tags || []).map(t => Array.isArray(t) ? t[0].toLowerCase() : t.toLowerCase());
+                return title.includes(lowerSearch) || description.includes(lowerSearch) || tagsArr.some(tag => tag.includes(lowerSearch));
+            });
+        }
         if (filterActive.length > 0) {
             const activeTagNames = filterActive.map(item => item.tag[0]);
-
             result = result.filter(memory => {
                 if (!memory.tags) return false;
-                
                 const memoryTagNames = memory.tags.map(t => Array.isArray(t) ? t[0] : t);
-
                 return activeTagNames.some(tagName => memoryTagNames.includes(tagName));
             });
         }
-
         if (sortMode === 'newest') {
             result.sort((a, b) => new Date(b.date) - new Date(a.date));
         } else if (sortMode === 'oldest') {
             result.sort((a, b) => new Date(a.date) - new Date(b.date));
         }
-
         return result;
-    }, [memories, filterActive, sortMode]); 
+    }, [memories, filterActive, sortMode, searchText]);
+
+    const filteredTags = useMemo(() => {
+        if (searchText.trim() === '') return tags;
+        const lowerSearch = searchText.toLowerCase();
+        return tags.filter(t => t[0].toLowerCase().includes(lowerSearch));
+    }, [tags, searchText]);
 
     return (
-<ScrollView style={styles.ScrollView} contentContainerStyle={styles.scrollContent}>
-        <View style={{backgroundColor: colors.background}}>
-            
+        <ScrollView style={styles.ScrollView} contentContainerStyle={styles.scrollContent}>
+            <View style={{backgroundColor: colors.background}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Text style={{...styles.title, color: colors.text, marginLeft: 20}}>Memories</Text>
-                <TouchableOpacity 
-                onPress={() => {setModalOpen(!modalOpen);}}
-                style={{
-                    padding: 10,
-                    margin: 10,
-                    alignSelf: 'flex-start'
-                }}
-            >
-                <Text style={{ fontSize: 24, color: colors.text }}>{modalOpen ? "✕" : "☰"}</Text>
-            </TouchableOpacity>
-
-        
-            </View>
-            {(sortMode === 'newest' || sortMode === 'oldest' || filterActive.length > 0) && (
-                <TouchableOpacity
-                onPress={() => {
-                    setSortMode(null);
-                    setFilterActive([]);
-                }}
-                style={{
-                    backgroundColor: colors.card,
-                    marginHorizontal: 20,
-                    marginBottom: 10,
-                    padding: 10,
-                    borderRadius: 8,
-                    alignItems: 'center',
-                }}
-            >
-                <Text style={{ color: colors.text }}>Clear Filters & Sorting ({filterActive.length + (sortMode ? 1 : 0)})</Text>
-            </TouchableOpacity>
-            )}
-            {modalOpen && (
-            <View style={{
-                alignSelf: 'center',
-                width: '100%',
-                backgroundColor: colors.card,
-                borderRadius: 8,
-                padding: 10
-            }}>
-                <TouchableOpacity onPress={() => setModalOpen(false)} style={{ alignSelf: 'flex-end' }}>
-                </TouchableOpacity>
-                <Text style={{ color: colors.text, marginTop: 10 }}>Sort By:</Text>
-                
-                <TouchableOpacity onPress={() => {
-                    setSortMode(sortMode === 'newest' ? null : 'newest');
-                }} style={{ paddingVertical: 8, flexDirection: 'row', alignItems: 'center', backgroundColor: sortMode=== 'newest' ? colors.background : colors.card,borderRadius: 5 }}>
-                    <Text style={{ color: colors.text, marginLeft: 10 }}>Date (Newest First)</Text>
-                    { sortMode === 'newest' && <Text style={{ color: colors.text}}> ✓</Text> }
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => {
-                    setSortMode(sortMode === 'oldest' ? null : 'oldest');             
-                }} style={{ paddingVertical: 8, flexDirection: 'row', alignItems: 'center', backgroundColor: sortMode=== 'oldest' ? colors.background : colors.card,borderRadius: 5 }}>
-                    <Text style={{ color: colors.text, marginLeft: 10 }}>Date (Oldest First)</Text>
-                    { sortMode === 'oldest' && <Text style={{ color: colors.text}}> ✓</Text> }
-                </TouchableOpacity>
-                <Text style={{ color: colors.text, marginTop: 10 }}>Filter:</Text>
-                <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginLeft: 20}}>
-                        {tags.map((t, index) => (
-                        <TouchableOpacity
-                            key={`${t[0]}-${index}`}
-                            onPress={() =>  { toggleTag(t, index) }}
-                            style={{
-                            
-                            backgroundColor: t[1],
-                            opacity: filterActive.some(st => st.index === index) ? 1 : 0.2,
-                            borderRadius: 16,
-                            paddingHorizontal: 5,
-                            paddingVertical: 5,
-                            marginRight: 3,
-                            marginBottom: 1,
-                            borderWidth: 3,
-                            borderColor: filterActive.some(st => st.index === index) ? colors.text : colors.border,
-                            }}
-                        >
-                            <Text style={{color: colors.text}}>{t[0]}</Text>
+                    <Text style={{...styles.title, color: colors.text, marginLeft: 20}}>Memories</Text>
+                    <TouchableOpacity 
+                        onPress={() => {setModalOpen(!modalOpen);}}
+                        style={{
+                            padding: 10,
+                            margin: 10,
+                            alignSelf: 'flex-start'
+                        }}
+                    >
+                        <Text style={{ fontSize: 24, color: colors.text }}>{modalOpen ? "✕" : "☰"}</Text>
+                    </TouchableOpacity>
+                </View>
+                {/* Search Bar */}
+                <View style={{marginHorizontal: 20, marginBottom: 10}}>
+                    <TextInput
+                        placeholder={t('search')}
+                        placeholderTextColor="#888"
+                        value={searchText}
+                        onChangeText={setSearchText}
+                        style={{
+                            backgroundColor: colors.card,
+                            borderRadius: 8,
+                            padding: 10,
+                            color: colors.text,
+                        }}
+                    />
+                </View>
+                {(sortMode === 'newest' || sortMode === 'oldest' || filterActive.length > 0) && (
+                    <TouchableOpacity
+                        onPress={() => {
+                            setSortMode(null);
+                            setFilterActive([]);
+                        }}
+                        style={{
+                            backgroundColor: colors.card,
+                            marginHorizontal: 20,
+                            marginBottom: 10,
+                            padding: 10,
+                            borderRadius: 8,
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Text style={{ color: colors.text }}>Clear Filters & Sorting ({filterActive.length + (sortMode ? 1 : 0)})</Text>
+                    </TouchableOpacity>
+                )}
+                {modalOpen && (
+                    <View style={{
+                        alignSelf: 'center',
+                        width: '100%',
+                        backgroundColor: colors.card,
+                        borderRadius: 8,
+                        padding: 10
+                    }}>
+                        <TouchableOpacity onPress={() => setModalOpen(false)} style={{ alignSelf: 'flex-end' }}>
                         </TouchableOpacity>
-                        ))}
+                        <Text style={{ color: colors.text, marginTop: 10 }}>Sort By:</Text>
+                        <TouchableOpacity onPress={() => {
+                            setSortMode(sortMode === 'newest' ? null : 'newest');
+                        }} style={{ paddingVertical: 8, flexDirection: 'row', alignItems: 'center', backgroundColor: sortMode=== 'newest' ? colors.background : colors.card,borderRadius: 5 }}>
+                            <Text style={{ color: colors.text, marginLeft: 10 }}>Date (Newest First)</Text>
+                            { sortMode === 'newest' && <Text style={{ color: colors.text}}> ✓</Text> }
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            setSortMode(sortMode === 'oldest' ? null : 'oldest');             
+                        }} style={{ paddingVertical: 8, flexDirection: 'row', alignItems: 'center', backgroundColor: sortMode=== 'oldest' ? colors.background : colors.card,borderRadius: 5 }}>
+                            <Text style={{ color: colors.text, marginLeft: 10 }}>Date (Oldest First)</Text>
+                            { sortMode === 'oldest' && <Text style={{ color: colors.text}}> ✓</Text> }
+                        </TouchableOpacity>
+                        <Text style={{ color: colors.text, marginTop: 10 }}>Filter:</Text>
+                        <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginLeft: 20}}>
+                            {filteredTags.map((t, index) => (
+                                <TouchableOpacity
+                                    key={`${t[0]}-${index}`}
+                                    onPress={() =>  { toggleTag(t, index) }}
+                                    style={{
+                                        backgroundColor: t[1],
+                                        opacity: filterActive.some(st => st.index === index) ? 1 : 0.2,
+                                        borderRadius: 16,
+                                        paddingHorizontal: 5,
+                                        paddingVertical: 5,
+                                        marginRight: 3,
+                                        marginBottom: 1,
+                                        borderWidth: 3,
+                                        borderColor: filterActive.some(st => st.index === index) ? colors.text : colors.border,
+                                    }}
+                                >
+                                    <Text style={{color: colors.text}}>{t[0]}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
                     </View>
-            </View>
-        )}
-        
+                )}
                 <View style={{ flexDirection: 'row', paddingHorizontal: 10, marginBottom: 8 }}>
-                <CardGrid cart_bool={false} items={finalMemories} onItemPress={handleMemoryPress} />
-
+                    <CardGrid cart_bool={false} items={finalMemories} onItemPress={handleMemoryPress} />
+                </View>
             </View>
-            </View>
-    </ScrollView>
-
+        </ScrollView>
     )
 
 
